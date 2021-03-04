@@ -1,0 +1,9 @@
+baseUrl: $CRAFT_WEB_URL
+enabled: true
+handle: default
+hasUrls: true
+language: en-US
+name: 'Craft Start'
+primary: true
+siteGroup: ee6446bc-8c13-426c-aac7-391b9dae59a4 # Craft Start
+sortOrder: 1

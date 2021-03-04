@@ -1,0 +1,28 @@
+# Environment
+.env
+
+# Dependencies
+vendor
+
+# Generated files and data
+craftcms/storage/backups
+web/cpresources
+
+# Content assets
+web/uploads
+
+# Miscelaneous (OS files, Editor preferences, ...)
+.DS_Store
+Thumbs.db
+.cache
+.project
+.settings
+.tmproj
+*.esproj
+nbproject
+*.sublime-workspace
+*.sublime-project
+*.komodoproject
+.komodotools
+dwsync.xml
+logs/*

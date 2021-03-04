@@ -1,0 +1,44 @@
+{
+  "name": "yoannisj/craft-starter",
+  "description": "Boilerplate for Craft CMS projects with Docker as development environment",
+  "keywords": [
+    "craftcms",
+    "craft",
+    "cms",
+    "yii",
+    "boilerplate",
+    "docker"
+  ],
+  "homepage": "https://github.com/yoannisj/craft-starter",
+  "type": "project",
+  "license": "proprietary",
+  "support": {
+    "email": "office@yoannis.com",
+    "issues": "https://github.com/yoannisj/craft-starter/issues",
+    "source": "https://github.com/yoannisj/craft-starter",
+    "docs": "https://github.com/yoannisj/craft-starter/tree/master/README.md"
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "craftcms/cms": "^3.6",
+    "vlucas/phpdotenv": "^2.4.0",
+    "codemix/yii2-streamlog": "^1.2",
+    "yiisoft/yii2-redis": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {}
+  },
+  "repositories": [],
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "platform": {
+      "php": "7.3"
+    }
+  },
+  "scripts": {
+    "post-root-package-install": [
+      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+    ]
+  }
+}

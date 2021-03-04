@@ -1,0 +1,17 @@
+dateModified: 1614883219
+email:
+  fromEmail: office@yoannis.com
+  fromName: 'Craft Start'
+  transportType: craft\mail\transportadapters\Sendmail
+system:
+  edition: solo
+  live: true
+  name: 'Craft Start'
+  schemaVersion: 3.6.6
+  timeZone: America/Los_Angeles
+users:
+  allowPublicRegistration: false
+  defaultGroup: null
+  photoSubpath: null
+  photoVolumeUid: null
+  requireEmailVerification: true

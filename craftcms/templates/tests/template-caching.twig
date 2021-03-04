@@ -1,0 +1,19 @@
+{# hide this page from guest visitors and non-admin users #}
+{% if not currentUser or currentUser.admin == false %}
+  {% exit 404 %}
+{% endif %}
+
+<!doctype html>
+<html>
+  <head>
+    <title>Test Template Caching</title>
+  </head>
+  <body>
+    <p>If Craft's template caching is working correctly, the random number below will remain the same until the template cache is invalidated.</p>
+    {% cache using key "test_template_caching" %}
+      <pre>Random number (cached): {{ random() }}</pre>
+    {% endcache %}
+    <p>The following number is not wrapped in a cache directive, so it will be different on each request</p>
+    <pre>Random number (not cached): {{ random() }}</pre>
+  </body>
+</html>
