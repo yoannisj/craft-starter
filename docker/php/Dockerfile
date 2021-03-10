@@ -67,8 +67,8 @@ COPY --chown=www-data:www-data ./composer.lock /var/www/html/
 COPY --chown=www-data:www-data ./craft /var/www/html/
 
 # Including the script file to run craft's queue in a "keep alive" loop
-COPY --chown=www-data:www-data /var/www/html/run_queue.sh .
-RUN chmod a+x run_queue.sh
+COPY --chown=www-data:www-data ./docker/php/run_craft_queue.sh ./
+RUN chmod a+x run_craft_queue.sh
 
 # Create directories where composer read/writes its config, cache, etc.
 # and make php user 'www-data' the owner
