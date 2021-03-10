@@ -4,8 +4,10 @@
 
 use craft\helpers\App;
 
+// Include environment in APP_ID to support sharing services for multiple
+// environments (e.g. staging and production running on 1 VPS)
 $environment = App::env('ENVIRONMENT');
-$appId = App::env('APP_ID');
+$appId = (App::env('APP_ID') ?: 'CraftCMS').'_'.$environment;
 
 $redisConfig = [
     'class' => yii\redis\Connection::class,
@@ -21,6 +23,7 @@ if (!empty($redisPassword)) {
 return [
 
     '*' => [
+        'id' => $appId,
         'components' => [
             'redis' => $redisConfig,
             'cache' => [
@@ -30,7 +33,7 @@ return [
                     'database' => 0,
                 ]),
                 'defaultDuration' => 86400, // (in seconds => 1day)
-                'keyPrefix' => $appId.'_'.$environment,
+                'keyPrefix' => $appId,
             ],
             'session' => function() use ($redisConfig)
             {
@@ -48,6 +51,19 @@ return [
                 return Craft::createObject($config);
             },
         ],
+        'modules' => [
+            // Register and configure custom craft modules here.
+            // For example:
+            // 'my-custom-module' => [
+            //     'class' => \modules\my-custom-module\src\MyCustomModule::class,
+            //     'propertyName' => propertyValue
+            // ]
+        ],
+        'bootstrap' => [
+            // list of modules that need to be loaded automatically by Craft
+            // For example:
+            // 'my-custom-module', 'another-custom-module'
+        ]
     ],
 
 ];
