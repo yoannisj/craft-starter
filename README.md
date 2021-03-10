@@ -31,6 +31,12 @@ The services use the project's own images, which are based on debian/ubuntu in o
 - map the namespace of your custom craft modules to their base file path in the `"autoload" > "psr-4"` key
 - add repositories to your custom composer packages to the `"repositories"` key
 
+## TODO
+
+- ensure depending services are also removed when running `docker-composer run --rm service_name`
+- implement trusted SSL certificates for https://localhost with mkcert:
+    @see https://blog.amosti.net/local-reverse-proxy-with-nginx-mkcert-and-docker-compose/
+
 ## References
 
 The following articles were used as references to built this project, and contain further information about the project's setup and practices:
@@ -39,3 +45,4 @@ The following articles were used as references to built this project, and contai
 - https://mattgrayisok.com/logging-from-craft-cms-in-docker 
 - https://mattgrayisok.com/craft-cms-in-docker-https-ftw
 - https://nystudio107.com/blog/an-annotated-docker-config-for-frontend-web-development
+- https://blog.amosti.net/local-reverse-proxy-with-nginx-mkcert-and-docker-compose/
