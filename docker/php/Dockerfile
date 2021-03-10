@@ -55,12 +55,6 @@ RUN mv "$PHP_INI_DIR/php.ini-${ENVIRONMENT}" "$PHP_INI_DIR/conf.d/php.ini"
 # Install composer in /usr/local/bin/
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
-# Create directories where composer read/writes its config, cache, etc.
-# and make php user 'www-data' the owner
-RUN mkdir /var/www/.composer && \
-  mkdir /var/www/.composer/cache && \
-  chown -R www-data:www-data /var/www/.composer
-
 # Copy project files into image (with correct file ownership)
 COPY --chown=www-data:www-data ./web /var/www/html/web
 COPY --chown=www-data:www-data ./craftcms/config /var/www/html/craftcms/config
@@ -72,10 +66,17 @@ COPY --chown=www-data:www-data ./composer.json /var/www/html/
 COPY --chown=www-data:www-data ./composer.lock /var/www/html/
 COPY --chown=www-data:www-data ./craft /var/www/html/
 
+# Create directories where composer read/writes its config, cache, etc.
+# and make php user 'www-data' the owner
+RUN mkdir -p /var/www/.composer/cache && \
+  chown -R www-data:www-data /var/www/.composer
+
 # Switch to PHP user to run composer (same user owning the app files)
 USER www-data
 
 # Install php dependency packages with composer, in the 'vendor' directory
 # and make php user 'www-data' the owner
 # - includes craft cms, its plugins, and their dependencies
-RUN composer install -d /var/www/html/
+RUN composer install --verbose --no-progress --optimize-autoloader --no-interaction && \
+  chown -R www-data:www-data ./vendor && \
+  chown -R www-data:www-data ./composer.lock
