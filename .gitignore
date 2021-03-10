@@ -2,7 +2,6 @@
 .env
 
 # Generated files and data
-craftcms/storage/backups
 web/cpresources
 
 # Content assets
