@@ -55,6 +55,14 @@ return [
 
         'allowSimilarTags' => false,
 
+        // Whether Craft should run pending queue jobs automatically when someone visits the control panel.
+        // If disabled, an alternate queue worker must be set up separately, either as an always-running daemon
+        // (opens new window), or a cron job that runs the `queue/run` command every minute:
+        //  `* * * * * /path/to/project/craft queue/run`
+        // @allows bool
+        // @default true
+
+        'runQueueAutomatically' => false,
     ],
 
     // override settings for development environment

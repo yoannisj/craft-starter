@@ -1,4 +1,5 @@
 # @see https://docs.docker.com/compose/compose-file/compose-file-v3/
+# @see https://github.com/krallin/tini/issues/8
 version: '3.7'
 services:
   nginx:
@@ -39,6 +40,7 @@ services:
       - ./composer.json:/var/www/html/composer.json
       - ./composer.lock:/var/www/html/composer.lock
     init: true # enables improved process management
+    command: ["php-fpm"]
     networks:
       - webnet # add service to the internal 'webnet' network (see 'networks' key below)
     expose:
@@ -59,7 +61,7 @@ services:
       - webnet # add service to the internal 'webnet' network (see 'networks' key below)
     expose:
       - 9001 # expose to internal networks via port 9001
-    command: ["./craft", "queue/listen"]
+    command: ["./run_craft_queue.sh"]
     depends_on:
       - mariadb
       - redis
