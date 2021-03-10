@@ -9,6 +9,14 @@ return [
     // settings shared accross all environments
     '*' => [
 
+        // A private, random, cryptographically-secure key that is used for hashing and encrypting data in craft\services\Security.
+        // @warning This value should be the same across all environments.
+        // @warning that if this key ever changes, any data that was encrypted with it will be inaccessible.
+        // @accept String (no lenght limit)
+        // @default null
+
+        'securityKey' => App::env('SECURITY_KEY'),
+
         // Whether generated URLs should omit index.php
         // @allows bool
         // @default false
