@@ -1,9 +1,6 @@
 # Environment
 .env
 
-# Dependencies
-vendor
-
 # Generated files and data
 craftcms/storage/backups
 web/cpresources
