@@ -1,13 +1,39 @@
 # Craft Starter
 Boilerplate for Craft CMS projects with Docker as development environment
 
-## Usage
+## Getting Started
 
 This repository is to be used to start a new craft project:
 
-1. Clone this repository and `cd` into the local repository path
-2. Run `docker-compose run --rm php-web composer update` to update all composer dependencies and write your composer.lock file.
-3. Run `docker-compose run --rm php-web ./craft install` to install Craft in your local database
+1. Clone this repository locally and `cd` into the local repository path
+
+    ```
+    git clone https://github.com/yoannisj/craft-starter.git <project-repository-name>
+    cd path/to/<project-repository-name>
+    ```
+
+2. Duplicate the `.env.example` file, rename the copy to `.env`.
+
+    ```
+    cp .env.example .env
+    ```
+
+3. Set the environment variables in the new `.env` file to your will using your favourite text editor
+
+    You probably want to change the following environment variables
+    
+    `ENVIRONMENT` - Set this to `development` on your local computer so you can run the project in development mode
+    `DATABASE_NAME` - Set this to the name of the databse that you will use on production
+    `DATABASE_TABLE_PREFIX` - Change this if your production database already contains another craft project using the same table prefix
+
+4. Run `docker-compose run --rm php-web composer update` to update all composer dependencies and write your `composer.lock` file.
+
+5. Run `docker-compose run --rm php-web php craft install` to install Craft in your local database
+
+6. Run `docker-compose down && docker-compose up -d` to start the docker containers running your craft project locally
+
+7. Visit http://localhost/admin in your browser and log in with the admin user account (created during craft installation to start in step 5) to start fiddling!
+
 
 ## Development Environment
 
