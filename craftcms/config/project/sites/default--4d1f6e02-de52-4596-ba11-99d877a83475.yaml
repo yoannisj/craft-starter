@@ -1,4 +1,4 @@
-baseUrl: $WEB_URL
+baseUrl: 'http://$WEB_URL/'
 enabled: true
 handle: default
 hasUrls: true

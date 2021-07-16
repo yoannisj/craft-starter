@@ -20,12 +20,12 @@ ENV NGINX_VERSION=${NGINX_VERSION}
 ENV ENVIRONMENT=${ENVIRONMENT}
 
 # Copy localhost SSL certificate
-# COPY ./docker/nginx/localhost.crt /etc/nginx/localhost.crt
-# COPY ./docker/nginx/localhost.key /etc/nginx/localhost.key
+# COPY ./services/nginx/ssl/localhost.crt /etc/nginx/localhost.crt
+# COPY ./services/nginx/ssl/localhost.key /etc/nginx/localhost.key
 
 # Use custom NGINX config file(s)
-COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY ./docker/nginx/security-headers.conf /etc/nginx/security-headers.conf
+COPY ./services/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./services/nginx/security-headers.conf /etc/nginx/security-headers.conf
 
 # Copy public project files into nginx root directory
 # and make php user 'www-data' the owner

@@ -1,0 +1,35 @@
+services:
+  craft-web: &craft-service-mariadb
+    image: yoannisj/craft-mariadb:${PHP_VERSION}
+    build:
+      args:
+        - DATABASE_DRIVER=mariadb
+        - MARIADB_VERSION=${MARIADB_VERSION:-10.2}
+    environment:
+      DATABASE_DRIVER: mariadb
+      DATABASE_VERSION: ${MARIADB_VERSION:-10.2}
+  craft-cli:
+    *craft-service-mariadb
+  craft-queue:
+    *craft-service-mariadb
+  db:
+    image: yoannisj/craft-db-mariadb:${MARIADB_VERSION:-10.2}
+    build:
+      dockerfile: ./services/mariadb/Dockerfile
+      context: .
+      args:
+        - MARIADB_VERSION=${MARIADB_VERSION:-10.2}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:-secret}
+      MYSQL_USER: ${DATABASE_USER:-craftcms}
+      MYSQL_PASSWORD: ${DATABASE_USER:-secret}
+      MYSQL_DATABASE: ${DATABASE_NAME:-craftcms}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - '${PUBLIC_DATABASE_PORT:-3306}:${DATABASE_PORT:-3306}'
+volumes:
+  # we use named volumes to share and persist files and data across services, but without
+  # maintaining them as part of the project (these volumes are stored internally by docker)
+  mariadb_data:
+    driver: local

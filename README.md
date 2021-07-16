@@ -18,7 +18,15 @@ This repository is to be used to start a new craft project:
     cp .env.example .env
     ```
 
-3. Set the environment variables in the new `.env` file to your will using your favourite text editor
+3. Choose a database driver by changing the `COMPOSE_FILE` variable in your `.env` file:
+
+    - mysql: `COMPOSE_FILE=./docker-compose.yml:./services/mysql/docker-compose.override.yml`
+    - mariadb: `COMPOSE_FILE=./docker-compose.yml:./services/mariadb/docker-compose.override.yml`
+    - postgresql: `COMPOSE_FILE=./docker-compose.yml:./services/postgres/docker-compose.override.yml`
+
+    **Note**: the database specific docker-compose file will also override some of the environment variables populated in the php containers, so Craft CMS knows which database driver to use.
+
+4. Set the environment variables in the new `.env` file to your will using your favourite text editor
 
     You probably want to change the following environment variables
     
@@ -26,9 +34,9 @@ This repository is to be used to start a new craft project:
     `DATABASE_NAME` - Set this to the name of the databse that you will use on production
     `DATABASE_TABLE_PREFIX` - Change this if your production database already contains another craft project using the same table prefix
 
-4. Run `docker-compose run --rm php-web composer update` to update all composer dependencies and write your `composer.lock` file.
+4. Run `docker-compose run --rm craft composer update` to update all composer dependencies and write your `composer.lock` file.
 
-5. Run `docker-compose run --rm php-web php craft install` to install Craft in your local database
+5. Run `docker-compose run --rm craft php craft install` to install Craft in your local database
 
 6. Run `docker-compose down && docker-compose up -d` to start the docker containers running your craft project locally
 
@@ -41,11 +49,11 @@ This project uses a docker as a development environment, relying on the docker-c
 
 The services use the project's own images, which are based on debian/ubuntu in order to minimise discrepancies with the production environment. The images' `Dockerfile`s and configuration files are saved in the project's `docker` repository.
 
-- The `nginx` service provides the local web-server, used to serve static files from the `web` folder, and forwarding dynamic `.php` requests to the `php-web` service.
+- The `nginx` service provides the local web-server, used to serve static files from the `web` folder, and forwarding dynamic `.php` requests to the `craft` service.
 
-- The `php-web` service is responsible for handling dynamic web-requests with PHP-FPM, forwarded by nginx to Craft-CMS's `web/index.php` script file. Craft-CMS, its dependencies and plugins are installed on this service's image with Composer.
+- The `craft` service is responsible for handling dynamic web-requests with PHP-FPM, forwarded by nginx to Craft-CMS's `web/index.php` script file. Craft-CMS, its dependencies and plugins are installed on this service's image with Composer.
 
-- The `php-worker` service is responsible for running background jobs with the PHP CLI. It is built on the same image as `php-web`, and therefore shares the same Composer and Craft-CMS installation. In order to discover and run jobs in Craft-CMS's queue, it runs the `craft queue/listen` command.
+- The `craft-queue` service is responsible for running background jobs with the PHP CLI. It is built on the same image as `craft`, and therefore shares the same Composer and Craft-CMS installation. In order to discover and run jobs in Craft-CMS's queue, it runs the `craft queue/listen` command.
 
 - The `mariadb` service provides a maria-db server, and is where Craft CMS's dynamic data is stored.
 
@@ -65,7 +73,7 @@ The services use the project's own images, which are based on debian/ubuntu in o
 
 ## References
 
-The following articles were used as references to built this project, and contain further information about the project's setup and practices:
+The following articles were used as references to build this project, and contain further information about the project's setup and practices:
 
 - https://mattgrayisok.com/a-craft-cms-development-workflow-with-docker-part-1-local-development
 - https://mattgrayisok.com/logging-from-craft-cms-in-docker 

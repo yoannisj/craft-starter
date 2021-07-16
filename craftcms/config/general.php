@@ -33,7 +33,7 @@ return [
         // @default []
 
         'aliases' => [
-            'webroot' => App::env('WEB_PATH'),
+            'webroot' => App::env('WEB_ROOT'),
             'web' => App::env('WEB_URL'),
             'localUploads' => App::env('LOCAL_UPLOADS_PATH'),
             'localUploadsUrl' => App::env('LOCAL_UPLOADS_URL'),
@@ -110,7 +110,7 @@ return [
         // @accept bool
         // @default true
 
-        'enableGraphQlCaching' => false,
+        'enableGraphqlCaching' => false,
     ],
 
     // override settings for staging environment

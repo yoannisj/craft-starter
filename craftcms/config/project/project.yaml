@@ -1,13 +1,20 @@
-dateModified: 1614883219
+dateModified: 1626426265
 email:
   fromEmail: office@yoannis.com
   fromName: 'Craft Start'
   transportType: craft\mail\transportadapters\Sendmail
+meta:
+  __names__:
+    4d1f6e02-de52-4596-ba11-99d877a83475: 'Craft Start' # Craft Start
+    7bbbdf44-0744-4e2a-9582-b6d92760c996: Videos # Videos
+    8c0545c6-6226-46fd-b0c0-2f2aedb18a8b: Images # Images
+    ee6446bc-8c13-426c-aac7-391b9dae59a4: 'Craft Start' # Craft Start
+    fc61f91e-fd62-49a3-ad84-60dcd9a32b9c: Common # Common
 system:
   edition: solo
   live: true
   name: 'Craft Start'
-  schemaVersion: 3.6.6
+  schemaVersion: 3.7.7
   timeZone: America/Los_Angeles
 users:
   allowPublicRegistration: false

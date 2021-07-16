@@ -5,7 +5,7 @@ services:
   nginx:
     image: yoannisj/craft-nginx:${NGINX_VERSION:-1.19}
     build:
-      dockerfile: ./docker/nginx/Dockerfile
+      dockerfile: ./services/nginx/Dockerfile
       context: .
       args: # expose environment variables as build arguments
         - NGINX_VERSION
@@ -20,16 +20,18 @@ services:
       - ./web:/var/www/html/web
     init: true # enables improved process management
     networks:
-      - webnet # add service to the internal 'webnet' network (see 'networks' key below)
+      - craftnet # add service to the internal 'craftnet' network (see 'networks' key below)
     ports:
       - '${PUBLIC_WEB_PORT:-80}:80'
       - '${PUBLIC_WEB_PORT_SECURE:-443}:443'
     depends_on:
-      - php-web
-  php-web: &php-service
-    image: yoannisj/craft-php:${PHP_VERSION:-7.4}
+      - craft-web
+    profiles:
+      - web
+  craft-web: &craft-service
+    image: yoannisj/craft:${PHP_VERSION:-7.4}
     build:
-      dockerfile: ./docker/php/Dockerfile
+      dockerfile: ./services/craft/Dockerfile
       context: .
       args: # expose environment variables as build arguments
         - PHP_VERSION=${PHP_VERSION:-7.4}
@@ -39,53 +41,66 @@ services:
     environment:
       DATABASE_HOST: db
     volumes:
-      - ./web:/var/www/html/web
+      - ./composer.json:/var/www/html/composer.json
+      - ./composer.lock:/var/www/html/composer.lock
+      - ./vendor:/var/www/html/vendor
       - ./craftcms/config:/var/www/html/craftcms/config
       - ./craftcms/modules:/var/www/html/craftcms/modules
       - ./craftcms/storage/backups:/var/www/html/craftcms/storage/backups
       - ./craftcms/templates:/var/www/html/craftcms/templates
-      - ./vendor:/var/www/html/vendor
-      - ./composer.json:/var/www/html/composer.json
-      - ./composer.lock:/var/www/html/composer.lock
+      - ./web:/var/www/html/web
     init: true # enables improved process management
-    command: ["php-fpm"]
     networks:
-      - webnet # add service to the internal 'webnet' network (see 'networks' key below)
-    expose:
-      - '9000' # expose to internal networks via port 9000
+      - craftnet # add service to the internal 'craftnet' network (see 'networks' key below)
     depends_on:
       - db
       - redis
-  php-worker:
-    <<: *php-service
+    command: [ "php-fpm" ]
+    profiles:
+      - web
+  craft-cli:
+    <<: *craft-service
+    entrypoint: [ "php", "./craft" ]
+    command: [ "help" ]
+    profiles:
+      - cli
+  craft-queue:
+    <<: *craft-service
     expose:
       - '9001' # expose to internal networks via port 9001
-    command: [ "./run_craft_queue.sh" ]
+    command: [ "./craft_queue.sh" ]
+    profiles:
+      - web
+      - cli
   db:
-    # extended by either docker-compose.mysql.yaml, docker-compose.mariadb.yml or docker-compose.postgres.yml
+    # this service needs to be extended by loading one of the database service overrides:
+    # - ./services/mysql/docker-compose.ovveride.yaml
+    # - ./services/mariadb/docker-compose.override.yml
+    # - ./services/postgres/docker-compose.override.yml
     build:
       context: .
       args: # expose environment variables as build arguments
         - ENVIRONMENT
     init: true # enables improved process management
     networks:
-      - webnet # add service to the internal 'webnet' network (see 'networks' key below)
+      - craftnet # add service to the internal 'craftnet' network (see 'networks' key below)
+    profiles:
+      - web
+      - cli
   redis:
     image: yoannisj/craft-redis:${REDIS_VERSION:-5}
     build:
-      dockerfile: ./docker/redis/Dockerfile
+      dockerfile: ./services/redis/Dockerfile
       context: .
     init: true
     networks:
-      - webnet
+      - craftnet
     ports:
       - '${PUBLIC_REDIS_PORT:-6379}:${REDIS_PORT:-6379}'
-volumes:
-  # we use named volumes to share and persist files and data across services, but without maintaining them as part of the project
-  # those volumes are stored internally by docker
-  dbdata:
-    driver: local
+    profiles:
+      - web
+      - cli
 networks:
-  # create internal network called 'webnet' which used the default network driver 'bridge'
-  webnet:
+  # create internal network called 'craftnet' which used the default network driver 'bridge'
+  craftnet: # network used by craft application services
     driver: bridge
