@@ -19,7 +19,7 @@
     "docs": "https://github.com/yoannisj/craft-starter/tree/master/README.md"
   },
   "require": {
-    "craftcms/cms": "^3.6",
+    "craftcms/cms": "^3.7",
     "vlucas/phpdotenv": "^3.4",
     "yiisoft/yii2-redis": "^2.0"
   },

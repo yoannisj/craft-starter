@@ -1,10 +1,23 @@
 # @see https://docs.docker.com/engine/reference/builder/
 
-# Base this image on the official nginx image
+# Define build arguments available outside build stage (before first FROM instruction)
+# @note value can be overriden by environment variable defined for this service in docker-compose.yml
+#   or by environment variables defined when running the `docker build` command
+ARG NGINX_VERSION=1.19
+ARG ENVIRONMENT=production
+
+# Base this image on corresponding version of official nginx image
 # @see https://hub.docker.com/_/nginx
-# - OS: ddebian:buster-slim
-# - Nginx Version: 1.19
-FROM nginx:1.19
+FROM nginx:${NGINX_VERSION}
+
+# Make build arguments available in build stage (after FROM instruction)
+# @see https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
+ARG NGINX_VERSION
+ARG ENVIRONMENT
+
+# Expose NGINX_VERSION as environment variable (available in containers created with this image)
+ENV NGINX_VERSION=${NGINX_VERSION}
+ENV ENVIRONMENT=${ENVIRONMENT}
 
 # Copy localhost SSL certificate
 # COPY ./docker/nginx/localhost.crt /etc/nginx/localhost.crt

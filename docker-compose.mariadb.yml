@@ -1,0 +1,23 @@
+services:
+  php-web: &php-web-service-mariadb
+    environment:
+      DATABASE_DRIVER: mariadb
+      DATABASE_VERSION: ${MARIADB_VERSION:-10.2}
+  php-worker:
+    *php-web-service-mariadb
+  db:
+    image: yoannisj/craft-mariadb:${MARIADB_VERSION:-10.2}
+    build:
+      dockerfile: ./docker/mariadb/Dockerfile
+      context: .
+      args:
+        - MARIADB_VERSION=${MARIADB_VERSION:-10.2}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:-secret}
+      MYSQL_USER: ${DATABASE_USER:-craftcms}
+      MYSQL_PASSWORD: ${DATABASE_USER:-secret}
+      MYSQL_DATABASE: ${DATABASE_NAME:-craftcms}
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - '${PUBLIC_DATABASE_PORT:-3306}:${DATABASE_PORT:-3306}'

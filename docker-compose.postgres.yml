@@ -1,0 +1,23 @@
+services:
+  php-web: &php-web-service-postgres
+    environment:
+      DATABASE_DRIVER: postgres
+      DATABASE_VERSION: ${POSTGRES_VERSION:-13.3}
+  php-worker:
+    *php-web-service-postgres
+  db:
+    image: yoannisj/craft-postgres:${POSTGRES_VERSION:-13.3}
+    build:
+      dockerfile: ./docker/postgres/Dockerfile
+      context: .
+      args:
+        - POSTGRES_VERSION=${DATABASE_VERSION:-13.3}
+    environment:
+      POSTGRES_VERSION: ${POSTGRES_VERSION:-13.3}
+      POSTGRES_DB: ${DATABASE_NAME:-craftcms}
+      POSTGRES_USER: ${DATABASE_USER:-craftcms}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-secret}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - '${PUBLIC_DATABASE_PORT:-5432}:${DATABASE_PORT:-5432}'

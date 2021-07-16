@@ -4,10 +4,28 @@
 
 use craft\helpers\App;
 
+$dbDriver = App::env('DATABASE_DRIVER');
+$dbPort = App::env('DATABASE_PORT');
+
+if ($dbDriver == 'mariadb') {
+    $dbDriver = 'mysql';
+} else if ($dbDriver == 'postgres') {
+    $dbDriver = 'pgsql';
+}
+
+if (empty($dbPort))
+{
+    if ($dbDriver == 'mysql') {
+        $dbPort = 3306;
+    } else if ($dbDriver == 'pgsql') {
+        $dbPort = 5432;
+    }
+}
+
 return [
-    'driver' => App::env('DATABASE_DRIVER'),
-    'server' => App::env('DATABASE_SERVER'),
-    'port' => App::env('DATABASE_PORT'),
+    'driver' => $dbDriver,
+    'server' => App::env('DATABASE_HOST'),
+    'port' => $dbPort,
     'user' => App::env('DATABASE_USER'),
     'password' => App::env('DATABASE_PASSWORD'),
     'database' => App::env('DATABASE_NAME'),

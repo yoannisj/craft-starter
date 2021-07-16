@@ -3,10 +3,13 @@
 version: '3.7'
 services:
   nginx:
-    image: yoannisj/craft-nginx:latest
+    image: yoannisj/craft-nginx:${NGINX_VERSION:-1.19}
     build:
       dockerfile: ./docker/nginx/Dockerfile
       context: .
+      args: # expose environment variables as build arguments
+        - NGINX_VERSION
+        - ENVIRONMENT
     env_file:
       # load environment variables from files listed below into Dockerfile and containers
       # @note environment variables in files lower down the list override values from previous files
@@ -19,18 +22,23 @@ services:
     networks:
       - webnet # add service to the internal 'webnet' network (see 'networks' key below)
     ports:
-      - ${PUBLIC_WEB_PORT:-80}:80
-      - ${PUBLIC_WEB_PORT_SECURE:-443}:443
+      - '${PUBLIC_WEB_PORT:-80}:80'
+      - '${PUBLIC_WEB_PORT_SECURE:-443}:443'
     depends_on:
       - php-web
-  php-web:
-    image: yoannisj/craft-php:latest
-    build: &php-build
+  php-web: &php-service
+    image: yoannisj/craft-php:${PHP_VERSION:-7.4}
+    build:
       dockerfile: ./docker/php/Dockerfile
       context: .
+      args: # expose environment variables as build arguments
+        - PHP_VERSION=${PHP_VERSION:-7.4}
+        - ENVIRONMENT=${ENVIRONMENT:-production}
     env_file:
       - .env
-    volumes: &php-volumes
+    environment:
+      DATABASE_HOST: db
+    volumes:
       - ./web:/var/www/html/web
       - ./craftcms/config:/var/www/html/craftcms/config
       - ./craftcms/modules:/var/www/html/craftcms/modules
@@ -44,46 +52,26 @@ services:
     networks:
       - webnet # add service to the internal 'webnet' network (see 'networks' key below)
     expose:
-      - 9000 # expose to internal networks via port 9000
+      - '9000' # expose to internal networks via port 9000
     depends_on:
-      - mariadb
+      - db
       - redis
   php-worker:
-    image: yoannisj/craft-php:latest
-    build:
-      *php-build
-    env_file:
-      - .env
-    volumes:
-      *php-volumes
-    init: true # enables improved process management
-    networks:
-      - webnet # add service to the internal 'webnet' network (see 'networks' key below)
+    <<: *php-service
     expose:
-      - 9001 # expose to internal networks via port 9001
-    command: ["./run_craft_queue.sh"]
-    depends_on:
-      - mariadb
-      - redis
-  mariadb:
-    image: yoannisj/craft-mariadb:latest
+      - '9001' # expose to internal networks via port 9001
+    command: [ "./run_craft_queue.sh" ]
+  db:
+    # extended by either docker-compose.mysql.yaml, docker-compose.mariadb.yml or docker-compose.postgres.yml
     build:
-      dockerfile: ./docker/mariadb/Dockerfile
       context: .
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:-secret}
-      MYSQL_DATABASE: ${DATABASE_NAME:-craftcms}
-      MYSQL_USER: ${DATABASE_USER:-craftcms}
-      MYSQL_PASSWORD: ${DATABASE_PASSWORD:-secret}
-    volumes:
-      - dbdata:/var/lib/mysql
+      args: # expose environment variables as build arguments
+        - ENVIRONMENT
     init: true # enables improved process management
     networks:
       - webnet # add service to the internal 'webnet' network (see 'networks' key below)
-    ports:
-      - ${PUBLIC_DATABASE_PORT:-3306}:3306
   redis:
-    image: yoannisj/craft-redis:latest
+    image: yoannisj/craft-redis:${REDIS_VERSION:-5}
     build:
       dockerfile: ./docker/redis/Dockerfile
       context: .
@@ -91,7 +79,7 @@ services:
     networks:
       - webnet
     ports:
-      - ${PUBLIC_REDIS_PORT:-6379}:6379
+      - '${PUBLIC_REDIS_PORT:-6379}:${REDIS_PORT:-6379}'
 volumes:
   # we use named volumes to share and persist files and data across services, but without maintaining them as part of the project
   # those volumes are stored internally by docker
