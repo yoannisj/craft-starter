@@ -5,6 +5,7 @@
 use craft\helpers\App;
 
 $dbDriver = App::env('DATABASE_DRIVER');
+$dbServer = App::env('DATABASE_HOSTNAME');
 $dbPort = App::env('DATABASE_PORT');
 
 if ($dbDriver == 'mariadb') {
@@ -24,7 +25,7 @@ if (empty($dbPort))
 
 return [
     'driver' => $dbDriver,
-    'server' => App::env('DATABASE_HOST'),
+    'server' => $dbServer,
     'port' => $dbPort,
     'user' => App::env('DATABASE_USER'),
     'password' => App::env('DATABASE_PASSWORD'),

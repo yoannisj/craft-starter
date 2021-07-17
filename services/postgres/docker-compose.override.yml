@@ -1,6 +1,6 @@
 services:
   craft-web: &craft-service-postgres
-    image: yoannisj/craft-postgres:${PHP_VERSION}
+    image: yoannisj/craft:${PHP_VERSION}-postgres
     build:
       args:
         - DATABASE_DRIVER=postgres
@@ -20,14 +20,13 @@ services:
       args:
         - POSTGRES_VERSION=${DATABASE_VERSION:-13.3}
     environment:
-      POSTGRES_VERSION: ${POSTGRES_VERSION:-13.3}
       POSTGRES_DB: ${DATABASE_NAME:-craftcms}
       POSTGRES_USER: ${DATABASE_USER:-craftcms}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-secret}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - '${PUBLIC_DATABASE_PORT:-5432}:${DATABASE_PORT:-5432}'
+      - '${DATABASE_PORT:-5432}${PUBLIC_PORT_SUFFIX}:${DATABASE_PORT:-5432}'
 volumes:
   # we use named volumes to share and persist files and data across services, but without
   # maintaining them as part of the project (these volumes are stored internally by docker)

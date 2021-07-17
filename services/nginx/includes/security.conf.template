@@ -1,0 +1,38 @@
+# =Security
+# -----------------------------------------------------------------------------
+
+# =CORS: Comment Out one of the blocks below
+# A. In local development, trust any incoming request origins
+add_header Access-Control-Allow-Origin '*' always;
+add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS' always;
+add_header Access-Control-Allow-Headers 'Content-Type, Accept' always;
+add_header Access-Control-Allow-Credentials 'true' always;
+
+# B. In production, only trust web origin
+# set $is_trusted_origin false;
+
+# if ($host = "${WEB_HOSTNAME}:${WEB_PORT}") {
+#     set $is_trusted_origin true;
+# }
+
+# If HSTS is enabled, then you should check the HTTPS port
+# if ($host = "${WEB_URL}:443") {
+#     set $is_trusted_origin true;
+# }
+
+# If tunnelling is enabled, then you should check the tunnel origin
+# if ($host = "${TUNNEL_URL}:${TUNNEL_PORT}") {
+#     set $is_trusted_origin true;
+# }
+
+# if ($host = "${TUNNEL_URL}:443") {
+#     set $is_trusted_origin true;
+# }
+
+# if ($is_trusted_origin)
+# {
+#     add_header Access-Control-Allow-Origin $host always;
+#     add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS' always;
+#     add_header Access-Control-Allow-Headers 'Content-Type, Accept' always;
+#     add_header Access-Control-Allow-Credentials 'true' always;
+# }

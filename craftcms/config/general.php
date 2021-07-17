@@ -25,6 +25,14 @@ return [
 
         'omitScriptNameInUrls' => true,
 
+        // The URI segment Craft should look for when determining if the current request should
+        // route to the control panel rather than the front-end website.
+        // @see https://craftcms.com/docs/3.x/config/config-settings.html#cptrigger
+        // @accept string
+        // @default 'admin'
+
+        'cpTrigger' => 'admin',
+
         // Any custom Yii aliases (opens new window) that should be defined for every request.
         // @see https://craftcms.com/docs/3.x/config/#aliases
         // @see https://craftcms.com/docs/3.x/config/config-settings.html#aliases
@@ -33,8 +41,8 @@ return [
         // @default []
 
         'aliases' => [
-            'webroot' => App::env('WEB_ROOT'),
             'web' => App::env('WEB_URL'),
+            'webroot' => App::env('WEB_ROOT'),
             'localUploads' => App::env('LOCAL_UPLOADS_PATH'),
             'localUploadsUrl' => App::env('LOCAL_UPLOADS_URL'),
         ],

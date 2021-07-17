@@ -31,7 +31,7 @@ This repository is to be used to start a new craft project:
     You probably want to change the following environment variables
     
     `ENVIRONMENT` - Set this to `development` on your local computer so you can run the project in development mode
-    `DATABASE_NAME` - Set this to the name of the databse that you will use on production
+    `DATABASE_NAME` - Set this to the name of the database that you will use on production
     `DATABASE_TABLE_PREFIX` - Change this if your production database already contains another craft project using the same table prefix
 
 4. Run `docker-compose run --rm craft composer update` to update all composer dependencies and write your `composer.lock` file.
