@@ -4,6 +4,10 @@
 
 use craft\helpers\App;
 
+$webHostname = App::env('WEB_HOSTNAME');
+$webPort = App::env('WEB_PORT') ?: '443';
+$webUrl = "https://$webHostname:$webPort";
+
 return [
 
     // settings shared accross all environments
@@ -41,7 +45,7 @@ return [
         // @default []
 
         'aliases' => [
-            'web' => App::env('WEB_URL'),
+            'web' => $webUrl,
             'webroot' => App::env('WEB_ROOT'),
             'localUploads' => App::env('LOCAL_UPLOADS_PATH'),
             'localUploadsUrl' => App::env('LOCAL_UPLOADS_URL'),

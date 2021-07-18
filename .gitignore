@@ -8,11 +8,8 @@ web/cpresources
 web/uploads
 
 # SSL Certificates
-services/ssl/*.key
-services/ssl/*.crt
-services/ssl/*.cert
-services/ssl/*.pem
-services/ssl/*.p12
+services/nginx/ssl
+services/ssl
 
 # Miscelaneous (OS files, Editor preferences, ...)
 .DS_Store

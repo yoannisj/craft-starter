@@ -1,38 +1,30 @@
 # =Security
 # -----------------------------------------------------------------------------
 
-# =CORS: Comment Out one of the blocks below
-# A. In local development, trust any incoming request origins
-add_header Access-Control-Allow-Origin '*' always;
-add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS' always;
-add_header Access-Control-Allow-Headers 'Content-Type, Accept' always;
-add_header Access-Control-Allow-Credentials 'true' always;
+#=HSTS
+# @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+# add_header Strict-Transport-Security 'max-age=63072000; includeSubDomains; preload' always;
 
-# B. In production, only trust web origin
-# set $is_trusted_origin false;
+# =CORS
+# @see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+# @see https://www.fastly.com/blog/best-practices-using-vary-header
 
-# if ($host = "${WEB_HOSTNAME}:${WEB_PORT}") {
-#     set $is_trusted_origin true;
-# }
+# normalize Accept-Encoding to reduce vary
+add_header Vary 'Accept-Encoding, Origin' always;
 
-# If HSTS is enabled, then you should check the HTTPS port
-# if ($host = "${WEB_URL}:443") {
-#     set $is_trusted_origin true;
-# }
+# Check whether request origin is to be trusted
+set $cors_trust_origin '0';
+if ($http_origin ~ ${TRUSTED_ORIGINS_PATTERN}) {
+    set $cors_trust_origin '1';
+}
 
-# If tunnelling is enabled, then you should check the tunnel origin
-# if ($host = "${TUNNEL_URL}:${TUNNEL_PORT}") {
-#     set $is_trusted_origin true;
-# }
-
-# if ($host = "${TUNNEL_URL}:443") {
-#     set $is_trusted_origin true;
-# }
-
-# if ($is_trusted_origin)
-# {
-#     add_header Access-Control-Allow-Origin $host always;
-#     add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS' always;
-#     add_header Access-Control-Allow-Headers 'Content-Type, Accept' always;
-#     add_header Access-Control-Allow-Credentials 'true' always;
-# }
+if ($cors_trust_origin)
+{
+    # Using '*' in any of the CORS headers below, only works
+    #if the CORS request does not include credentials
+    add_header Access-Control-Allow-Origin $http_origin always;
+    add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS' always;
+    add_header Access-Control-Allow-Headers 'Authorization, Origin, Content-Type, Accept, X-Requested-With' always;
+    add_header Access-Control-Allow-Credentials 'true' always;
+    add_header Access-Control-Max-Age '7200' always; # recommend 2 hours (browser have their own max)
+}

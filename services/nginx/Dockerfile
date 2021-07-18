@@ -16,11 +16,8 @@ ARG ENVIRONMENT
 ARG NGINX_VERSION
 ARG NGINX_ENVSUBST_TEMPLATE_SUFFIX=.template
 ARG NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
-ARG LOCAL_SSL_KEY_FILE=./services/ssl/private.key
-ARG LOCAL_SSL_CERT_FILE=./services/ssl/public.crt
-ARG WEB_ROOT=/var/www/html/web
-ARG WEB_HOSTNAME=localhost
-ARG WEB_PORT=80
+ARG LOCAL_SSL_KEY_FILE=./services/nginx/ssl/private.key
+ARG LOCAL_SSL_CERT_FILE=./services/nginx/ssl/public.crt
 
 # Expose environment variables and set default value
 # (these are available in containers created with this image)
@@ -30,9 +27,11 @@ ENV NGINX_ENVSUBST_TEMPLATE_SUFFIX=${NGINX_ENVSUBST_TEMPLATE_SUFFIX}
 ENV NGINX_ENVSUBST_TEMPLATE_DIR=${NGINX_ENVSUBST_TEMPLATE_DIR}
 ENV LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE}
 ENV LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE}
-ENV WEB_ROOT=$WEB_ROOT
-ENV WEB_HOSTNAME=$WEB_HOSTNAME
-ENV WEB_PORT=$WEB_PORT
+# Other environment variables that are no ARGs but are used in config templates
+ENV WEB_ROOT=/var/www/html/web
+ENV WEB_HOSTNAME=localhost
+ENV WEB_PORT=443
+ENV WEB_PORT_UNSECURE=80
 
 # Copy localhost SSL certificate
 COPY ${LOCAL_SSL_KEY_FILE} /etc/nginx/ssl/private.key
@@ -55,4 +54,4 @@ RUN rm /etc/nginx/conf.d/default.conf
 
 # Copy public project files into nginx root directory
 # and make php user 'www-data' the owner
-COPY --chown=www-data:www-data ./web $WEB_ROOT
+COPY --chown=www-data:www-data ./web /var/www/html/web

@@ -1,4 +1,4 @@
-baseUrl: '$WEB_URL'
+baseUrl: 'https://$WEB_HOSTNAME:$WEB_PORT'
 enabled: true
 handle: default
 hasUrls: true
