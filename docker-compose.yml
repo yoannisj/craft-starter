@@ -106,6 +106,29 @@ services:
     profiles:
       - web
       - cli
+  ngrok:
+    image: wernight/ngrok
+    env_file:
+      - .env
+    environment:
+      TUNNEL_TARGET_HOST: nginx
+      TUNNEL_TARGET_PORT: ${WEB_PORT:-8443}
+      NGROK_LOOK_DOMAIN: https://nginx
+      NGROK_PORT: ${WEB_PORT:-8443}
+      NGROK_PROTOCOL: ${TUNNEL_PROTOCOL:-HTTP}
+      NGROK_BINDTLS: ${TUNNEL_BINDTLS:-true}
+      NGROK_USERNAME: ${TUNNEL_HTTPAUTH_USERNAME}
+      NGROK_PASSWORD: ${TUNNEL_HTTPAUTH_PASSWORD}
+      NGROK_DEBUG: ${TUNNEL_DEBUG:-true}
+    init: true
+    networks:
+      - craftnet
+    ports:
+      - ${TUNNEL_PORT:-4040}${PUBLIC_PORT_SUFFIX}:${TUNNEL_PORT:-4040}
+    depends_on:
+      - nginx
+    profiles:
+      - tunnel
 networks:
   # create internal network called 'craftnet' which used the default network driver 'bridge'
   craftnet: # network used by craft application services

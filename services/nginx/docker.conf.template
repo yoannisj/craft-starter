@@ -47,7 +47,7 @@ server {
     # Check request path against static files
     location / {
         # load project's own security headers
-        # include /etc/nginx/conf.d/includes/security.conf;
+        include /etc/nginx/conf.d/includes/security.conf;
 
         # `$uri` matches /assets/main.css with /assets/main.css
         # `$uri/` matches /articles with /articles/index.html
