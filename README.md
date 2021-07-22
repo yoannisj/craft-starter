@@ -20,9 +20,9 @@ This repository is to be used to start a new craft project:
 
 3. Choose a database driver by changing the `COMPOSE_FILE` variable in your `.env` file:
 
-    - mysql: `COMPOSE_FILE=./docker-compose.yml:./services/mysql/docker-compose.override.yml`
-    - mariadb: `COMPOSE_FILE=./docker-compose.yml:./services/mariadb/docker-compose.override.yml`
-    - postgresql: `COMPOSE_FILE=./docker-compose.yml:./services/postgres/docker-compose.override.yml`
+    - mysql: `COMPOSE_FILE=./docker-compose.yml:./services/database/mysql/docker-compose.override.yml`
+    - mariadb: `COMPOSE_FILE=./docker-compose.yml:./services/database/mariadb/docker-compose.override.yml`
+    - postgresql: `COMPOSE_FILE=./docker-compose.yml:./services/database/postgres/docker-compose.override.yml`
 
     **Note**: the database specific docker-compose file will also override some of the environment variables populated in the php containers, so Craft CMS knows which database driver to use.
 

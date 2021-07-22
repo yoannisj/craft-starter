@@ -12,10 +12,10 @@ services:
     *craft-service-mysql
   craft-queue:
     *craft-service-mysql
-  db:
+  database:
     image: yoannisj/craft-db-mysql:${MYSQL_VERSION:-8.0}
     build:
-      dockerfile: ./services/mysql/Dockerfile
+      dockerfile: ./services/database/mysql/Dockerfile
       context: .
       args:
         - MYSQL_VERSION=${MYSQL_VERSION:-8.0}

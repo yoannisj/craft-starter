@@ -12,10 +12,10 @@ services:
     *craft-service-postgres
   craft-queue:
     *craft-service-postgres
-  db:
+  database:
     image: yoannisj/craft-db-postgres:${POSTGRES_VERSION:-13.3}
     build:
-      dockerfile: ./services/postgres/Dockerfile
+      dockerfile: ./services/database/postgres/Dockerfile
       context: .
       args:
         - POSTGRES_VERSION=${DATABASE_VERSION:-13.3}

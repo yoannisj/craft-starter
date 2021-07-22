@@ -65,14 +65,14 @@ RUN if [ '$DATABASE_DRIVER' = 'postgres' ]; then \
 
 # Use project's configuration for php-fpm
 # @link https://mattgrayisok.com/logging-from-craft-cms-in-docker
-COPY ./services/php/docker.conf /usr/local/etc/php-fpm.d/docker.conf
+COPY ./services/craft/php/docker.conf /usr/local/etc/php-fpm.d/docker.conf
 
 # Load default PHP settings based on current environment
 # @link https://hub.docker.com/_/php#configuration
 RUN cp "${PHP_INI_DIR}/php.ini-${ENVIRONMENT}" "${PHP_INI_DIR}/conf.d/php-defaults-${ENVIRONMENT}.ini"
 
 # Load custom php settings for current environment
-COPY ./services/php/user-${ENVIRONMENT}.ini ${PHP_INI_DIR}/conf.d/user-${ENVIRONMENT}.ini
+COPY ./services/craft/php/user-${ENVIRONMENT}.ini ${PHP_INI_DIR}/conf.d/user-${ENVIRONMENT}.ini
 
 # Install composer in /usr/local/bin/
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer

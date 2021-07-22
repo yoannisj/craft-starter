@@ -16,8 +16,8 @@ ARG ENVIRONMENT
 ARG NGINX_VERSION
 ARG NGINX_ENVSUBST_TEMPLATE_SUFFIX=.template
 ARG NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
-ARG LOCAL_SSL_KEY_FILE=./services/nginx/ssl/localhost.selfsigned-private.key
-ARG LOCAL_SSL_CERT_FILE=./services/nginx/ssl/localhost.selfsigned-public.crt
+ARG LOCAL_SSL_KEY_FILE=./services/httpd/ssl/localhost.selfsigned-private.key
+ARG LOCAL_SSL_CERT_FILE=./services/httpd/ssl/localhost.selfsigned-public.crt
 
 # Expose environment variables and set default value
 # (these are available in containers created with this image)
@@ -42,12 +42,12 @@ COPY ${LOCAL_SSL_CERT_FILE} /etc/nginx/ssl/public.crt
 # - replace references to environment variables using `envsubst`
 # - remove the `.template` extension
 # - put the resulting config file in `/etc/nginx/conf.d`
-COPY ./services/nginx/includes/*.conf${NGINX_ENVSUBST_TEMPLATE_SUFFIX} ${NGINX_ENVSUBST_TEMPLATE_DIR}/includes/
-COPY ./services/nginx/*.conf${NGINX_ENVSUBST_TEMPLATE_SUFFIX} ${NGINX_ENVSUBST_TEMPLATE_DIR}/
+COPY ./services/httpd/nginx/includes/*.conf${NGINX_ENVSUBST_TEMPLATE_SUFFIX} ${NGINX_ENVSUBST_TEMPLATE_DIR}/includes/
+COPY ./services/httpd/nginx/*.conf${NGINX_ENVSUBST_TEMPLATE_SUFFIX} ${NGINX_ENVSUBST_TEMPLATE_DIR}/
 
 # Copy custom NGINX config files into container
-COPY ./services/nginx/includes/*.conf /etc/nginx/conf.d/includes/
-COPY ./services/nginx/*.conf /etc/nginx/conf.d/
+COPY ./services/httpd/nginx/includes/*.conf /etc/nginx/conf.d/includes/
+COPY ./services/httpd/nginx/*.conf /etc/nginx/conf.d/
 
 # Remove default config (we are using our own docker.conf file)
 RUN rm /etc/nginx/conf.d/default.conf

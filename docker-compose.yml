@@ -2,18 +2,18 @@
 # @see https://github.com/krallin/tini/issues/8
 version: '3.7'
 services:
-  nginx:
+  httpd:
     image: yoannisj/craft-nginx:${NGINX_VERSION:-1.19}
     build:
-      dockerfile: ./services/nginx/Dockerfile
+      dockerfile: ./services/httpd/nginx/Dockerfile
       context: .
       args: # expose environment variables as build arguments
         - ENVIRONMENT
         - NGINX_VERSION=${NGINX_VERSION:-1.19}
         - NGINX_ENVSUBST_TEMPLATE_SUFFIX=${NGINX_ENVSUBST_TEMPLATE_SUFFIX:-.template}
         - NGINX_ENVSUBST_TEMPLATE_DIR=${NGINX_ENVSUBST_TEMPLATE_DIR:-/etc/nginx/templates}
-        - LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE:-./services/nginx/ssl/localhost.selfsigned-private.key}
-        - LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE:-./services/nginx/ssl/localhost.selfsigned-public.crt}
+        - LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE:-./services/httpd/ssl/localhost.selfsigned-private.key}
+        - LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE:-./services/httpd/ssl/localhost.selfsigned-public.crt}
     env_file:
       # load environment variables from files listed below into Dockerfile and containers
       # @note environment variables in files lower down the list override values from previous files
@@ -45,7 +45,7 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_HOSTNAME: db
+      DATABASE_HOSTNAME: database
     volumes:
       - ./composer.json:/var/www/html/composer.json
       - ./composer.lock:/var/www/html/composer.lock
@@ -59,7 +59,7 @@ services:
     networks:
       - craftnet # add service to the internal 'craftnet' network (see 'networks' key below)
     depends_on:
-      - db
+      - database
       - redis
     command: [ "php-fpm" ]
     profiles:
@@ -78,11 +78,11 @@ services:
     profiles:
       - web
       - cli
-  db:
-    # this service needs to be extended by loading one of the database service overrides:
-    # - ./services/mysql/docker-compose.ovveride.yaml
-    # - ./services/mariadb/docker-compose.override.yml
-    # - ./services/postgres/docker-compose.override.yml
+  database:
+    # this service needs to be extended by loading one of the database driver service overrides:
+    # - ./services/database/mysql/docker-compose.ovveride.yaml
+    # - ./services/database/mariadb/docker-compose.override.yml
+    # - ./services/database/postgres/docker-compose.override.yml
     build:
       context: .
       args: # expose environment variables as build arguments
@@ -111,9 +111,9 @@ services:
     env_file:
       - .env
     environment:
-      TUNNEL_TARGET_HOST: nginx
+      TUNNEL_TARGET_HOST: httpd
       TUNNEL_TARGET_PORT: ${WEB_PORT:-8443}
-      NGROK_LOOK_DOMAIN: https://nginx
+      NGROK_LOOK_DOMAIN: https://httpd
       NGROK_PORT: ${WEB_PORT:-8443}
       NGROK_PROTOCOL: ${TUNNEL_PROTOCOL:-HTTP}
       NGROK_BINDTLS: ${TUNNEL_BINDTLS:-true}
@@ -126,7 +126,7 @@ services:
     ports:
       - ${PUBLIC_PORT_PREFIX}${TUNNEL_PORT:-4040}:${TUNNEL_PORT:-4040}
     depends_on:
-      - nginx
+      - httpd
     profiles:
       - tunnel
 networks:

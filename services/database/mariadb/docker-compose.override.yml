@@ -12,10 +12,10 @@ services:
     *craft-service-mariadb
   craft-queue:
     *craft-service-mariadb
-  db:
+  database:
     image: yoannisj/craft-db-mariadb:${MARIADB_VERSION:-10.2}
     build:
-      dockerfile: ./services/mariadb/Dockerfile
+      dockerfile: ./services/database/mariadb/Dockerfile
       context: .
       args:
         - MARIADB_VERSION=${MARIADB_VERSION:-10.2}
