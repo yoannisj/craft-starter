@@ -21,7 +21,7 @@ services:
       - .env
     environment:
       WEB_ROOT: /var/www/html/web # override web root to where the ./web folder is mounted
-      TRUSTED_ORIGINS_PATTERN: ${TRUSTED_ORIGINS_PATTERN}
+      CORS_ALLOW_HOSTNAMES_PATTERN: ${CORS_ALLOW_HOSTNAMES_PATTERN:-'(localhost|\S*\.ngrok\.io)'}
     volumes:
       - ./web:/var/www/html/web # serve public static files via nginx directly
     init: true # enables improved process management

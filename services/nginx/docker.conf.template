@@ -2,6 +2,22 @@
 # @see https://mattgrayisok.com/craft-cms-in-docker-https-ftw
 # @see https://github.com/nystudio107/craft/blob/craft-webpack/docker-config/nginx/default.conf
 
+
+# =CORS check
+# ------------------------------------------------------------------------------
+# Create a `$cors_allow_origin` variable to set the 'Access-Control-Allow-Origin'
+# response header based on the incoming request's 'Origin' header
+# @see http://www.jfabre.com/cors-and-if-is-evil-if-directives-in-nginx-configuration-files/
+
+# map $http_origin $cors_allow_origin {
+#     default '';
+#     '~^(https)?://${CORS_ALLOW_HOSTNAMES_PATTERN}(?::(\d))?$' '$http_origin';
+# }
+
+# =HTTP
+# ------------------------------------------------------------------------------
+# Handle incoming unsecure web requests (i.e. `http://`)
+
 server {
 
     listen ${WEB_PORT_UNSECURE}; # http requests
@@ -12,6 +28,10 @@ server {
         return 301 https://${WEB_HOSTNAME}:${WEB_PORT}$request_uri;
     }
 }
+
+# =HTTPS
+# ------------------------------------------------------------------------------
+# Handle incoming encrypted web requests (i.e. `https://`)
 
 server {
 
@@ -43,11 +63,18 @@ server {
     # =Compression
     include /etc/nginx/conf.d/includes/compression.conf;
 
+    # =CORS check
+    set $cors_allow_origin '';
+    if ($http_origin ~ '^(https)?://${CORS_ALLOW_HOSTNAMES_PATTERN}:?(\d+)?$') {
+        set $cors_allow_origin '$http_origin';
+    }
+
     # =Static
     # Check request path against static files
     location / {
         # load project's own security headers
         include /etc/nginx/conf.d/includes/security.conf;
+
 
         # `$uri` matches /assets/main.css with /assets/main.css
         # `$uri/` matches /articles with /articles/index.html

@@ -6,25 +6,31 @@
 # add_header Strict-Transport-Security 'max-age=63072000; includeSubDomains; preload' always;
 
 # =CORS
-# @see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-# @see https://www.fastly.com/blog/best-practices-using-vary-header
+# Sets the CORS headers after defining which origins are allowed by defining a
+# `$cors_allow_origin` variable higher up in the nginx config. For example:
+#   `set $cors_allow_origin 'https://www.example.com'`
+#
+# @note the $cors_allow_origin can be set in an `if` statement that checks the
+#   incoming 'Origin' header from nginx's built-in `$http_origin` variable.
+#
+# @note this requires that a `$cors_allow_origin` variable is defined higher up
+#   in the nginx config with `set $cors_allow_origin '...'`
 
-# normalize Accept-Encoding to reduce vary
+add_header Access-Control-Allow-Origin $cors_allow_origin always;
+add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS' always;
+add_header Access-Control-Allow-Headers 'Authorization, Origin, Content-Type, Accept, X-Requested-With' always;
+add_header Access-Control-Allow-Credentials 'true' always;
+add_header Access-Control-Max-Age '7200' always; # recommend 2 hours (browser have their own max)
+
+# =Vary
+# To avoid browser caching issues, we should add the 'Vary' response header
+# and tell browsers that the response will vary depending on the incoming headers:
+#
+# - 'Origin' if `$cors_allow_origin` variable used in CORS headers is set
+#   dynamically based on `$http_origin`
+#   @see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+#
+# - 'Accept-Encoding' if compression encoding algorithm is enabled dynamically
+#   @see https://www.fastly.com/blog/best-practices-using-vary-header
+
 add_header Vary 'Accept-Encoding, Origin' always;
-
-# Check whether request origin is to be trusted
-set $cors_trust_origin '0';
-if ($http_origin ~ ${TRUSTED_ORIGINS_PATTERN}) {
-    set $cors_trust_origin '1';
-}
-
-if ($cors_trust_origin)
-{
-    # Using '*' in any of the CORS headers below, only works
-    #if the CORS request does not include credentials
-    add_header Access-Control-Allow-Origin $http_origin always;
-    add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS' always;
-    add_header Access-Control-Allow-Headers 'Authorization, Origin, Content-Type, Accept, X-Requested-With' always;
-    add_header Access-Control-Allow-Credentials 'true' always;
-    add_header Access-Control-Max-Age '7200' always; # recommend 2 hours (browser have their own max)
-}
