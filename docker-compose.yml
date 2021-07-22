@@ -12,8 +12,8 @@ services:
         - NGINX_VERSION=${NGINX_VERSION:-1.19}
         - NGINX_ENVSUBST_TEMPLATE_SUFFIX=${NGINX_ENVSUBST_TEMPLATE_SUFFIX:-.template}
         - NGINX_ENVSUBST_TEMPLATE_DIR=${NGINX_ENVSUBST_TEMPLATE_DIR:-/etc/nginx/templates}
-        - LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE:-./services/nginx/ssl/private.key}
-        - LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE:-./services/nginx/ssl/public.crt}
+        - LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE:-./services/nginx/ssl/localhost.selfsigned-private.key}
+        - LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE:-./services/nginx/ssl/localhost.selfsigned-public.crt}
     env_file:
       # load environment variables from files listed below into Dockerfile and containers
       # @note environment variables in files lower down the list override values from previous files
@@ -28,8 +28,8 @@ services:
     networks:
       - craftnet # add service to the internal 'craftnet' network (see 'networks' key below)
     ports:
-      - '${WEB_PORT:-8443}:${WEB_PORT:-8443}' # match with conventional port
-      - '${WEB_PORT_UNSECURE:-8080}:${WEB_PORT_UNSECURE:-8080}' # match with conventional port
+      - '${PUBLIC_PORT_PREFIX}${WEB_PORT:-8443}:${WEB_PORT:-8443}'
+      - '${PUBLIC_PORT_PREFIX}${WEB_PORT_UNSECURE:-8080}:${WEB_PORT_UNSECURE:-8080}'
     depends_on:
       - craft-web
     profiles:
@@ -102,7 +102,7 @@ services:
     networks:
       - craftnet
     ports:
-      - '${REDIS_PORT:-6379}${PUBLIC_PORT_SUFFIX}:${REDIS_PORT:-6379}'
+      - '${PUBLIC_PORT_PREFIX}${REDIS_PORT:-6379}:${REDIS_PORT:-6379}'
     profiles:
       - web
       - cli
@@ -124,7 +124,7 @@ services:
     networks:
       - craftnet
     ports:
-      - ${TUNNEL_PORT:-4040}${PUBLIC_PORT_SUFFIX}:${TUNNEL_PORT:-4040}
+      - ${PUBLIC_PORT_PREFIX}${TUNNEL_PORT:-4040}:${TUNNEL_PORT:-4040}
     depends_on:
       - nginx
     profiles:

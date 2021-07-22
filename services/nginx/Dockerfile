@@ -16,8 +16,8 @@ ARG ENVIRONMENT
 ARG NGINX_VERSION
 ARG NGINX_ENVSUBST_TEMPLATE_SUFFIX=.template
 ARG NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
-ARG LOCAL_SSL_KEY_FILE=./services/nginx/ssl/private.key
-ARG LOCAL_SSL_CERT_FILE=./services/nginx/ssl/public.crt
+ARG LOCAL_SSL_KEY_FILE=./services/nginx/ssl/localhost.selfsigned-private.key
+ARG LOCAL_SSL_CERT_FILE=./services/nginx/ssl/localhost.selfsigned-public.crt
 
 # Expose environment variables and set default value
 # (these are available in containers created with this image)

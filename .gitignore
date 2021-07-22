@@ -9,7 +9,8 @@ web/uploads
 
 # SSL Certificates
 services/nginx/ssl
-services/ssl
+!services/nginx/ssl/localhost.selfsigned-private.key
+!services/nginx/ssl/localhost.selfsigned-public.crt
 
 # Miscelaneous (OS files, Editor preferences, ...)
 .DS_Store
