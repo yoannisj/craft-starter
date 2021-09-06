@@ -27,7 +27,8 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - '${DATABASE_PORT:-3306}${PUBLIC_PORT_SUFFIX}:${DATABASE_PORT:-3306}'
+      - published: ${PUBLIC_PORT_PREFIX:-''}${DATABASE_PORT:-3306}
+        target: ${DATABASE_PORT:-3306}
 volumes:
   # we use named volumes to share and persist files and data across services, but without
   # maintaining them as part of the project (these volumes are stored internally by docker)

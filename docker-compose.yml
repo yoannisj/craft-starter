@@ -28,8 +28,10 @@ services:
     networks:
       - craftnet # add service to the internal 'craftnet' network (see 'networks' key below)
     ports:
-      - '${PUBLIC_PORT_PREFIX}${WEB_PORT:-8443}:${WEB_PORT:-8443}'
-      - '${PUBLIC_PORT_PREFIX}${WEB_PORT_UNSECURE:-8080}:${WEB_PORT_UNSECURE:-8080}'
+      - published: ${PUBLIC_PORT_PREFIX:-''}${WEB_PORT:-8443}
+        target: ${WEB_PORT:-8443}
+      - published: ${PUBLIC_PORT_PREFIX:-''}${WEB_PORT_UNSECURE:-8080}
+        target: ${WEB_PORT_UNSECURE:-8080}
     depends_on:
       - craft-web
     profiles:
@@ -102,7 +104,8 @@ services:
     networks:
       - craftnet
     ports:
-      - '${PUBLIC_PORT_PREFIX}${REDIS_PORT:-6379}:${REDIS_PORT:-6379}'
+      - published: ${PUBLIC_PORT_PREFIX:-''}${REDIS_PORT:-6379}
+        target: ${REDIS_PORT:-6379}
     profiles:
       - web
       - cli
@@ -124,7 +127,8 @@ services:
     networks:
       - craftnet
     ports:
-      - ${PUBLIC_PORT_PREFIX}${TUNNEL_PORT:-4040}:${TUNNEL_PORT:-4040}
+      - published: ${PUBLIC_PORT_PREFIX:-''}${TUNNEL_PORT:-4040}
+        target: ${TUNNEL_PORT:-4040}
     depends_on:
       - httpd
     profiles:

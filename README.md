@@ -5,11 +5,18 @@ Boilerplate for Craft CMS projects with Docker as development environment
 
 This repository is to be used to start a new craft project:
 
-1. Clone this repository locally and `cd` into the local repository path
+1. Copy the repository's contents into a local directory, and `cd` into the local repository path
 
+    - Using [degit](https://github.com/Rich-Harris/degit#readme) (recommended):
     ```
-    git clone https://github.com/yoannisj/craft-starter.git <project-repository-name>
-    cd path/to/<project-repository-name>
+    degit github:yoannisj/craft-starter <path/to/project-directory>
+    cd <path/to/project-directory>
+    ```
+
+    - Using git clone: 
+    ```
+    git clone --depth=1 https://github.com/yoannisj/craft-starter.git <path/to/project-directory>
+    cd <path/to/project-directory>
     ```
 
 2. Duplicate the `.env.example` file, rename the copy to `.env`.
@@ -26,22 +33,33 @@ This repository is to be used to start a new craft project:
 
     **Note**: the database specific docker-compose file will also override some of the environment variables populated in the php containers, so Craft CMS knows which database driver to use.
 
-4. Set the environment variables in the new `.env` file to your will using your favourite text editor
+4. Create a security key used for the project's crypotography, and assign it to the `SECURITY_KEY` environment variable. We recommend to use a random  alphanumeric string of 48 characters long.
 
-    You probably want to change the following environment variables
-    
-    `ENVIRONMENT` - Set this to `development` on your local computer so you can run the project in development mode
-    `DATABASE_NAME` - Set this to the name of the database that you will use on production
-    `DATABASE_TABLE_PREFIX` - Change this if your production database already contains another craft project using the same table prefix
+5. Enable local HTTPS and virtual hostname (optional)
 
-4. Run `docker-compose run --rm craft composer update` to update all composer dependencies and write your `composer.lock` file.
+    - Choose a virtual hostname (e.g. `myproject.local`) and assign it `WEB_HOSTNAME` environment variable in your local `.env` file
+    - Add the virtual hostname to your local computer's `hosts` file to point it to `127.0.0.1`
+    - Create SSL certificate files for your virtual hostname with [mkcert](https://mkcert.dev/), or [openssl (self-signed)]() and save them in the project's `services/httpd/ssl` folder
+    - Update the `LOCAL_SSL_KEY_FILE` and `LOCAL_SSL_CERT_FILE` environment variables in your local `.env` file to point to the newly created SSL files in `services/httpd/ssl`
 
-5. Run `docker-compose run --rm craft php craft install` to install Craft in your local database
+6. Additionally to the environment variables edited above, you may want to override the following variables in the `.env` file to better reflect your project:
 
-6. Run `docker-compose down && docker-compose up -d` to start the docker containers running your craft project locally
+    - `PUBLIC_PORT_PREFIX` - Set this to a number between `1` and `5`, which will be used as a prefix to all ports exposed on your local computer by docker
+    - `APP_ID` - Set this to a handle string that represents your craftcms project instance (e.g. `myproject_craftcms`)
+    - `ENVIRONMENT` - Set this to `development` on your local computer so you can run the project in development mode
+    - `DATABASE_NAME` - Set this to a string that represents your craftcms project instance (e.g. `myproject_craftcms`)
+    - `DATABASE_TABLE_PREFIX` - Change this if your production database already contains data from another craft CMS project
 
-7. Visit http://localhost/admin in your browser and log in with the admin user account (created during craft installation to start in step 5) to start fiddling!
+7. Run `docker-compose run --rm craft composer update` to update all composer dependencies and update your project's `composer.lock` file.
 
+8. Run `docker-compose run --rm craft php craft install` to install Craft in your local database
+
+9. Run `docker-compose down && docker-compose up -d` to start the docker containers running your craft project locally
+
+10. Visit http://localhost/admin in your browser and log in with the admin user account to start fiddling!
+
+    **Note**: the local URL to your project differs if you enabled HTTPS and a virtual hostname in previous steps
+    **Note**: the username and password to access the admin area are the ones created during craft installation in previous steps
 
 ## Development Environment
 
@@ -61,15 +79,13 @@ The services use the project's own images, which are based on debian/ubuntu in o
 
 #### composer.json
 
-- sets `"mininum-stablity"` key to `"dev"` so we can install custom packages from a git repository branch directly (without having to release a version).
-- map the namespace of your custom craft modules to their base file path in the `"autoload" > "psr-4"` key
-- add repositories to your custom composer packages to the `"repositories"` key
+- map the namespace of your custom craft modules to their base file path in the composer.json file's `autoload.psr-4` field
+- add repositories to your custom composer packages to the `repositories` key
 
 ## TODO
 
+- use docker secrets for passwords and other security/auth keys
 - ensure depending services are also removed when running `docker-composer run --rm service_name`
-- implement trusted SSL certificates for https://localhost with mkcert:
-    @see https://blog.amosti.net/local-reverse-proxy-with-nginx-mkcert-and-docker-compose/
 
 ## References
 

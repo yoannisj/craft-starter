@@ -26,7 +26,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - '${DATABASE_PORT:-5432}${PUBLIC_PORT_SUFFIX}:${DATABASE_PORT:-5432}'
+      - published: ${PUBLIC_PORT_PREFIX:-''}${DATABASE_PORT:-5432}
+        target: ${DATABASE_PORT:-5432}
 volumes:
   # we use named volumes to share and persist files and data across services, but without
   # maintaining them as part of the project (these volumes are stored internally by docker)
