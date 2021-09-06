@@ -6,7 +6,7 @@ services:
         - DATABASE_DRIVER=mysql
         - MYSQL_VERSION=${MYSQL_VERSION:-8.0}
     environment:
-      DATABASE_DRIVER: mariadb
+      DATABASE_DRIVER: mysql
       DATABASE_VERSION: ${MYSQL_VERSION:-8.0}
   craft-cli:
     *craft-service-mysql

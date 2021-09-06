@@ -130,6 +130,6 @@ services:
     profiles:
       - tunnel
 networks:
-  # create internal network called 'craftnet' which used the default network driver 'bridge'
+  # create internal network called 'craftnet' which uses the default network driver 'bridge'
   craftnet: # network used by craft application services
     driver: bridge
