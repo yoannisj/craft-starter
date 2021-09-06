@@ -1,0 +1,23 @@
+# syntax = edrevo/dockerfile-plus
+
+# Include instructions from base dockerfile
+# @see https://github.com/edrevo/dockerfile-plus
+INCLUDE+ ./services/craft/Dockerfile.base
+
+# Switch to root user to install system dependencies
+USER root
+
+# Add the apt-get repository for PostgreSQL installation
+# - Extracts posgtres's major version number from POSTGRES_VERSION arg
+# - Adds repository for Posgtres packages
+# - Install postgres packages and PHP extension
+RUN IFS='.' read -ra pg_version_major <<EOF '$POSTGRES_VERSION' EOF \
+    apt-get update && apt-get install -y --no-install-recommends \
+    gnupg wget \
+    && wget -q -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+    && sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main $pg_version_major" >> /etc/apt/sources.list.d/pgdg.list' \
+    && apt-get install -y postgresql-client-$pg_version_major \
+    && docker-php-ext-install pdo_pgsql
+
+# Switch back to PHP user
+USER www-data

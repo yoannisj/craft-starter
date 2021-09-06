@@ -1,0 +1,15 @@
+# syntax = edrevo/dockerfile-plus
+
+# Include instructions from base dockerfile
+# @see https://github.com/edrevo/dockerfile-plus
+INCLUDE+ ./services/craft/Dockerfile.base
+
+# Switch to root user to install system dependencies
+USER root
+
+# Install and enable Mariadb dependencies for PHP
+RUN apt-get install -y mariadb-client \
+    && docker-php-ext-install pdo_mysql
+
+# Switch back to PHP user
+USER www-data

@@ -52,16 +52,16 @@ RUN apt-get update && apt-get install -y \
 
 # Conditionally install dependencies for database driver
 # - includes installing the mariadb client
-RUN if [ '$DATABASE_DRIVER' = 'postgres' ]; then \
-        IFS='.' read -ra pg_version_major <<EOF '$POSTGRES_VERSION' EOF \
-        apt-get install -y postgresql-client-$pg_version_major \
-        && docker-php-ext-install pdo_pgsql; \
-    elif [ '$DATABASE_DRIVER' = 'mariadb' ]; then \
-        apt-get install -y mariadb-client \
-        && docker-php-ext-install pdo_mysql; \
-    else \
-        docker-php-ext-install pdo_mysql; \
-    fi
+# RUN if [ '$DATABASE_DRIVER' = 'postgres' ]; then \
+#         IFS='.' read -ra pg_version_major <<EOF '$POSTGRES_VERSION' EOF \
+#         apt-get install -y postgresql-client-$pg_version_major \
+#         && docker-php-ext-install pdo_pgsql; \
+#     elif [ '$DATABASE_DRIVER' = 'mariadb' ]; then \
+#         apt-get install -y mariadb-client \
+#         && docker-php-ext-install pdo_mysql; \
+#     else \
+#         docker-php-ext-install pdo_mysql; \
+#     fi
 
 # Use project's configuration for php-fpm
 # @link https://mattgrayisok.com/logging-from-craft-cms-in-docker

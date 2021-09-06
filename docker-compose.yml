@@ -28,10 +28,10 @@ services:
     networks:
       - craftnet # add service to the internal 'craftnet' network (see 'networks' key below)
     ports:
-      - published: ${PUBLIC_PORT_PREFIX:-''}${WEB_PORT:-8443}
-        target: ${WEB_PORT:-8443}
-      - published: ${PUBLIC_PORT_PREFIX:-''}${WEB_PORT_UNSECURE:-8080}
-        target: ${WEB_PORT_UNSECURE:-8080}
+      - published: '${PUBLIC_PORT_PREFIX}${WEB_PORT:-8443}'
+        target: '${WEB_PORT:-8443}'
+      - published: '${PUBLIC_PORT_PREFIX}${WEB_PORT_UNSECURE:-8080}'
+        target: '${WEB_PORT_UNSECURE:-8080}'
     depends_on:
       - craft-web
     profiles:
@@ -48,10 +48,10 @@ services:
       - .env
     environment:
       DATABASE_HOSTNAME: database
+      REDIS_HOSTNAME: redis
     volumes:
       - ./composer.json:/var/www/html/composer.json
       - ./composer.lock:/var/www/html/composer.lock
-      - ./vendor:/var/www/html/vendor
       - ./craftcms/config:/var/www/html/craftcms/config
       - ./craftcms/modules:/var/www/html/craftcms/modules
       - ./craftcms/storage/backups:/var/www/html/craftcms/storage/backups
@@ -104,8 +104,8 @@ services:
     networks:
       - craftnet
     ports:
-      - published: ${PUBLIC_PORT_PREFIX:-''}${REDIS_PORT:-6379}
-        target: ${REDIS_PORT:-6379}
+      - published: '${PUBLIC_PORT_PREFIX}${REDIS_PORT:-6379}'
+        target: '${REDIS_PORT:-6379}'
     profiles:
       - web
       - cli
@@ -127,8 +127,8 @@ services:
     networks:
       - craftnet
     ports:
-      - published: ${PUBLIC_PORT_PREFIX:-''}${TUNNEL_PORT:-4040}
-        target: ${TUNNEL_PORT:-4040}
+      - published: '${PUBLIC_PORT_PREFIX}${TUNNEL_PORT:-4040}'
+        target: '${TUNNEL_PORT:-4040}'
     depends_on:
       - httpd
     profiles:
