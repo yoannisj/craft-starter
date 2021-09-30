@@ -47,6 +47,7 @@ services:
     env_file:
       - .env
     environment:
+      USE_PHP_DOTENV: 0
       DATABASE_HOSTNAME: database
       REDIS_HOSTNAME: redis
     volumes:
