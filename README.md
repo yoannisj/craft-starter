@@ -19,7 +19,7 @@ This repository is to be used to start a new craft project:
     cd <path/to/project-directory>
     ```
 
-2. Duplicate the `.env.example` file, rename the copy to `.env`.
+2. Duplicate the `.env.example` file and rename your copy to `.env`.
 
     ```
     cp .env.example .env
@@ -33,7 +33,9 @@ This repository is to be used to start a new craft project:
 
     **Note**: the database specific docker-compose file will also override some of the environment variables populated in the php containers, so Craft CMS knows which database driver to use.
 
-4. Create a security key used for the project's crypotography, and assign it to the `SECURITY_KEY` environment variable. We recommend to use a random  alphanumeric string of 48 characters long.
+4. Create a security key used for the project's crypotography, and assign it to the `SECURITY_KEY` environment variable.
+
+    **Note**: the security key must be shared on development, staging and production environments, so make sure you use a strong key from the start. We recommend to use a random  alphanumeric string of 48 characters long, which you can generate using a a service such as https://passwordsgenerator.net/.
 
 5. Enable local HTTPS and virtual hostname (optional)
 
@@ -47,35 +49,39 @@ This repository is to be used to start a new craft project:
     - `PUBLIC_PORT_PREFIX` - Set this to a number between `1` and `5`, which will be used as a prefix to all ports exposed on your local computer by docker
     - `APP_ID` - Set this to a handle string that represents your craftcms project instance (e.g. `myproject_craftcms`)
     - `ENVIRONMENT` - Set this to `development` on your local computer so you can run the project in development mode
-    - `DATABASE_NAME` - Set this to a string that represents your craftcms project instance (e.g. `myproject_craftcms`)
+    - `DATABASE_NAME` - Set this to a string that represents your craftcms project instance (e.g. `myproject_craftcms_localdev`)
     - `DATABASE_TABLE_PREFIX` - Change this if your production database already contains data from another craft CMS project
 
-7. Run `docker-compose run --rm craft composer update` to update all composer dependencies and update your project's `composer.lock` file.
+7. Run `docker-compose run --rm craft-web composer update` to update all composer dependencies and update your project's `composer.lock` file.
 
-8. Run `docker-compose run --rm craft php craft install` to install Craft in your local database
+8. Run `docker-compose run --rm craft-cli install` to install Craft in your local database
 
 9. Run `docker-compose down && docker-compose up -d` to start the docker containers running your craft project locally
 
-10. Visit http://localhost/admin in your browser and log in with the admin user account to start fiddling!
+10. Visit http://localhost:8080/admin in your browser and log in with the admin user account to start fiddling!
 
     **Note**: the local URL to your project differs if you enabled HTTPS and a virtual hostname in previous steps
-    **Note**: the username and password to access the admin area are the ones created during craft installation in previous steps
+    **Note**: the username and password to access the admin area are the ones you created during craft installation in previous steps
 
 ## Development Environment
 
-This project uses a docker as a development environment, relying on the docker-compose services described below.
+This project uses docker as a development environment, relying on the docker-compose services described below.
 
 The services use the project's own images, which are based on debian/ubuntu in order to minimise discrepancies with the production environment. The images' `Dockerfile`s and configuration files are saved in the project's `docker` repository.
 
-- The `nginx` service provides the local web-server, used to serve static files from the `web` folder, and forwarding dynamic `.php` requests to the `craft` service.
+- The `httpd` service provides the local web-server, used to serve static files from the project's `web` folder, and forwarding dynamic `.php` requests to the `craft-web` service.
 
-- The `craft` service is responsible for handling dynamic web-requests with PHP-FPM, forwarded by nginx to Craft-CMS's `web/index.php` script file. Craft-CMS, its dependencies and plugins are installed on this service's image with Composer.
+- The `craft-web` service is responsible for handling dynamic web-requests with PHP-FPM, forwarded by the httpd web-server to Craft-CMS's `web/index.php` script file. Craft-CMS, its dependencies and plugins are installed on this service's image with Composer.
 
-- The `craft-queue` service is responsible for running background jobs with the PHP CLI. It is built on the same image as `craft`, and therefore shares the same Composer and Craft-CMS installation. In order to discover and run jobs in Craft-CMS's queue, it runs the `craft queue/listen` command.
+- The `craft-cli` service can be used to run commands from Craft's CLI. It is using the same docker image as the `craft-web` service, and runs commands in the same Craft-CMS instance. To run a Craft CLI command, use `docker-compose run --rm craft-cli <command-name>`.
 
-- The `mariadb` service provides a maria-db server, and is where Craft CMS's dynamic data is stored.
+- The `craft-queue` service is responsible for running background jobs with the PHP CLI. It is using the same docker image as `craft-web`, and therefore runs jobs from the same Craft-CMS instance. In order to discover and run jobs in Craft-CMS's queue, it runs the `craft queue/listen` command behind the scenes.
 
-- The `redis` service provides a redis server, used to store Craft CMS's session and cache data in memory.
+- The `db` service provides a maria-db server, and is where Craft CMS's dynamic data is stored.
+
+- The `redis` service provides a redis server, used to store Craft CMS's session and cache data in memory for an extra performance boost.
+
+- The `ngrok` service can be used to expose your project's local web-server publicly with [ngrok](https://ngrok.com/), and share previews that can be accessed by co-workers on their own devices, or by external web-services (e.g. services that need to call craft controller action URLs).
 
 #### composer.json
 
@@ -84,8 +90,14 @@ The services use the project's own images, which are based on debian/ubuntu in o
 
 ## TODO
 
-- use docker secrets for passwords and other security/auth keys
+- add asset compilation and bundling service (using gulp.js, vite.js or laravel mix)
+- separate environment variables into service-speficic .env files (e.g. `.craft.env`, `.db.env`, etc.)
+- move docs to the `docs/dev` sub-folder and reserve the Readme.md file for the project itself
+- use docker secrets for passwords and other cryptographic keys for encryption/authentication
 - ensure depending services are also removed when running `docker-composer run --rm service_name`
+- further abstract down the `ngrok` service to support other web-tunneling services
+- implement git deployment to runcloud and/or laravel-forge with github actions
+- document installation and deployment on runcloud/laravel-forge servers
 
 ## References
 
