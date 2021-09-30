@@ -1,10 +1,12 @@
-# Environment
-.env
+# Environment Variables
+*.env
+
+# Project Dependencies
+vendor
 
 # Generated files and data
+craftcms/storage
 web/cpresources
-
-# Content assets
 web/uploads
 
 # SSL Certificates
