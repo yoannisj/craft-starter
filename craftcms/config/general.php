@@ -4,9 +4,18 @@
 
 use craft\helpers\App;
 
+$webRoot = App::env('WEB_ROOT');
 $webHostname = App::env('WEB_HOSTNAME');
 $webPort = App::env('WEB_PORT') ?: '443';
 $webUrl = "https://$webHostname:$webPort";
+
+$localUploadsUrl = App::env('LOCAL_UPLOADS_URL');
+$localUploadsPath = App::env('LOCAL_UPLOADS_PATH');
+
+// Support relative uploads path
+if (!empty($localUploadsPath) && !preg_match('/^\//', $localUploadsPath)) {
+    $localUploadsPath = rtrim($webRoot, '/').'/'.ltrim($localUploadsPath, './');
+}
 
 return [
 
@@ -46,9 +55,9 @@ return [
 
         'aliases' => [
             'web' => $webUrl,
-            'webroot' => App::env('WEB_ROOT'),
-            'localUploads' => App::env('LOCAL_UPLOADS_PATH'),
-            'localUploadsUrl' => App::env('LOCAL_UPLOADS_URL'),
+            'webroot' => $webRoot,
+            'localUploads' => $loaclUploadsPath,
+            'localUploadsUrl' => $localUploadsUrl,
         ],
 
         // Whether uploaded filenames with non-ASCII characters should be converted to ASCII (i.e. ñ → n).
