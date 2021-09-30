@@ -55,7 +55,7 @@ services:
       - ./composer.lock:/var/www/html/composer.lock
       - ./craftcms/config:/var/www/html/craftcms/config
       - ./craftcms/modules:/var/www/html/craftcms/modules
-      - ./craftcms/storage/backups:/var/www/html/craftcms/storage/backups
+      - ./craftcms/storage:/var/www/html/craftcms/storage
       - ./craftcms/templates:/var/www/html/craftcms/templates
       - ./web:/var/www/html/web
     init: true # enables improved process management
