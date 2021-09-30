@@ -11,7 +11,7 @@ $appId = (App::env('APP_ID') ?: 'CraftCMS').'_'.$environment;
 
 $redisConfig = [
     'class' => yii\redis\Connection::class,
-    'hostname' => App::env('REDIS_HOST'),
+    'hostname' => App::env('REDIS_HOSTNAME'),
     'port' => App::env('REDIS_PORT'),
 ];
 
