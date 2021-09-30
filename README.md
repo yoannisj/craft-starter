@@ -37,10 +37,10 @@ This repository is to be used to start a new craft project:
 
 5. Enable local HTTPS and virtual hostname (optional)
 
-    - Choose a virtual hostname (e.g. `myproject.local`) and assign it `WEB_HOSTNAME` environment variable in your local `.env` file
-    - Add the virtual hostname to your local computer's `hosts` file to point it to `127.0.0.1`
-    - Create SSL certificate files for your virtual hostname with [mkcert](https://mkcert.dev/), or [openssl (self-signed)]() and save them in the project's `services/httpd/ssl` folder
-    - Update the `LOCAL_SSL_KEY_FILE` and `LOCAL_SSL_CERT_FILE` environment variables in your local `.env` file to point to the newly created SSL files in `services/httpd/ssl`
+    - Choose a virtual hostname (e.g. `myproject.test`) and assign it `WEB_HOSTNAME` environment variable in your local `.env` file
+    - Add the virtual hostname to your local computer's `hosts` file and point it to `127.0.0.1`
+    - Create SSL certificate files for your virtual hostname with [mkcert](./docs/dev/ssl-mkcert-certificates.md), or [openssl (self-signed)](./docs/dev/ssl-openssl-certificates.md)
+    - Update the `LOCAL_SSL_KEY_FILE` and `LOCAL_SSL_CERT_FILE` environment variables in your local `.env` file to point to the newly created SSL files in `services/ssl`
 
 6. Additionally to the environment variables edited above, you may want to override the following variables in the `.env` file to better reflect your project:
 
