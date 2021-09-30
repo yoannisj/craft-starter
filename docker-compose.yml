@@ -53,6 +53,7 @@ services:
     volumes:
       - ./composer.json:/var/www/html/composer.json
       - ./composer.lock:/var/www/html/composer.lock
+      # - ./vendor:/var/www/html/vendor
       - ./craftcms/config:/var/www/html/craftcms/config
       - ./craftcms/modules:/var/www/html/craftcms/modules
       - ./craftcms/storage:/var/www/html/craftcms/storage
