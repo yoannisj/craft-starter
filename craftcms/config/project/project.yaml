@@ -14,7 +14,7 @@ system:
   edition: solo
   live: true
   name: 'Craft Start'
-  schemaVersion: 3.7.7
+  schemaVersion: 3.7.8
   timeZone: America/Los_Angeles
 users:
   allowPublicRegistration: false
