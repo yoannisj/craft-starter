@@ -8,7 +8,8 @@ INCLUDE+ ./services/craft/Dockerfile.base
 USER root
 
 # Install and enable Mysql dependencies for PHP
-RUN docker-php-ext-install pdo_mysql
+RUN apt-get install -y default-mysql-client \
+    && docker-php-ext-install pdo_mysql
 
 # Switch back to PHP user
 USER www-data
