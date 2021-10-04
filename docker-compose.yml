@@ -24,6 +24,8 @@ services:
       CORS_ALLOW_HOSTNAMES_PATTERN: ${CORS_ALLOW_HOSTNAMES_PATTERN:-'(localhost|\S*\.ngrok\.io)'}
     volumes:
       - ./web:/var/www/html/web # serve public static files via nginx directly
+      # - ${LOCAL_SSL_KEY_FILE:-./services/ssl/localhost.selfsigned-private.key}:/etc/nginx/ssl/private.key
+      # - ${LOCAL_SSL_CERT_FILE:-./services/ssl/localhost.selfsigned-public.crt}:/etc/nginx/ssl/public.crt
     init: true # enables improved process management
     networks:
       - craftnet # add service to the internal 'craftnet' network (see 'networks' key below)
@@ -50,6 +52,9 @@ services:
       USE_PHP_DOTENV: 0
       DATABASE_HOSTNAME: database
       REDIS_HOSTNAME: redis
+      ASSETS_DEVSERVER_HOSTNAME: localhost
+      ASSETS_DEVSERVER_HOSTNAME_INTERNAL: assets
+      ASSETS_DEVSERVER_PORT: ${ASSETS_DEVSERVER_PORT:-3000}
     volumes:
       - ./composer.json:/var/www/html/composer.json
       - ./composer.lock:/var/www/html/composer.lock
@@ -111,6 +116,40 @@ services:
     profiles:
       - web
       - cli
+  assets:
+    image: yoannisj/craft-vitejs:${NODE_VERSION:-16}-yarn_${YARN_VERSION:-1.16.0}
+    build:
+      dockerfile: ./services/assets/vitejs/Dockerfile
+      context: .
+      args:
+        - NODE_VERSION=${NODE_VERSION:-16}
+        - NODE_ENV=${ENVIRONMENT:-production}
+        - YARN_VERSION=${YARN_VERSION:-1.16.0}
+        - LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE:-./services/ssl/localhost.selfsigned-private.key}
+        - LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE:-./services/ssl/localhost.selfsigned-public.crt}
+    environment:
+      WEB_ROOT: /home/node/app/web/
+      NODE_ENV: ${ENVIRONMENT:-production}
+      ASSETS_DEVSERVER_HOSTNAME: '0.0.0.0'
+    volumes:
+      - ./package.json:/home/node/app/package.json
+      - ./yarn.lock:/home/node/app/yarn.lock
+      # - ./node_modules:/home/node/app/node_modules
+      - ./assets:/home/node/app/assets # source assets (served by dev-server)
+      - ./craftcms/templates:/home/node/app/craftcms/templates
+      - ./web/dist:/home/node/app/web/dist # production built assets
+      - ${LOCAL_SSL_KEY_FILE:-./services/ssl/localhost.selfsigned-private.key}:/home/node/ssl/private.key
+      - ${LOCAL_SSL_CERT_FILE:-./services/ssl/localhost.selfsigned-public.crt}:/home/node/ssl/public.crt
+    init: true
+    networks:
+      - craftnet
+    ports:
+      - published: '${PUBLIC_PORT_PREFIX}${ASSETS_DEVSERVER_PORT:-3000}'
+        target: '${ASSETS_DEVSERVER_PORT:-3000}'
+    depends_on:
+      - httpd
+    profiles:
+      - web
   ngrok:
     image: wernight/ngrok
     env_file:

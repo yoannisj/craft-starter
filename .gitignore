@@ -8,11 +8,12 @@ vendor
 craftcms/storage
 web/cpresources
 web/uploads
+web/dist
 
 # SSL Certificates
-services/httpd/ssl
-!services/httpd/ssl/localhost.selfsigned-private.key
-!services/httpd/ssl/localhost.selfsigned-public.crt
+services/ssl
+!services/ssl/localhost.selfsigned-private.key
+!services/ssl/localhost.selfsigned-public.crt
 
 # Miscelaneous (OS files, Editor preferences, ...)
 .DS_Store

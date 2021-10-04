@@ -1,4 +1,4 @@
-dateModified: 1633023044
+dateModified: 1633348757
 email:
   fromEmail: office@yoannis.com
   fromName: 'Craft Start'
@@ -10,6 +10,11 @@ meta:
     8c0545c6-6226-46fd-b0c0-2f2aedb18a8b: Images # Images
     ee6446bc-8c13-426c-aac7-391b9dae59a4: 'Craft Start' # Craft Start
     fc61f91e-fd62-49a3-ad84-60dcd9a32b9c: Common # Common
+plugins:
+  vite:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
 system:
   edition: solo
   live: true
