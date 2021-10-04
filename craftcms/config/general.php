@@ -75,6 +75,20 @@ return [
 
         'maxUploadFileSize' => 6000000, // (6MB)
 
+        // The template file extensions Craft will look for when matching a template path to a file on the front end.
+        // @see https://craftcms.com/docs/3.x/config/config-settings.html#defaulttemplateextensions
+        // @accept string[]
+        // @default ['twig','html']
+
+        'defaultTemplateExtensions' => [ 'html.twig', 'twig', 'html' ],
+
+        // The prefix that should be prepended to HTTP error status codes when determining the path to look for an error’s template.
+        // @see https://craftcms.com/docs/3.x/config/config-settings.html#errortemplateprefix
+        // @accept string
+        // @default ''
+
+        'errorTemplatePrefix' => '_errors/',
+
         // The default length of time Craft will store data, RSS feed, and template caches.
         // If set to 0, data and RSS feed caches will be stored indefinitely; template caches will be stored for one year.
         // @see https://craftcms.com/docs/3.x/config/config-settings.html#cacheduration

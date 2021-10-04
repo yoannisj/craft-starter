@@ -1,0 +1,110 @@
+{% set element = element ?? entry ?? category ?? user ?? asset ?? tag ?? null %}
+
+{% set metaTitle = metaTitle ?? (element ?
+  (element.title ~ '|' ~ curentSite.title) : currentSite.name) %}
+{% set metaDescription = metaDescription ?? null %}
+{% set metaImage = metaImage ?? null %}
+
+{% set canonicalUrl = canonicalUrl ?? craft.app.request.absoluteUrl %}
+{% set themeColor = themeColor ?? '#fff8dc' %}
+{% if themeColor and themeColor is instance of('craft\\fields\\data\\ColorData') %}
+  {% set themeColor = themeColor.hex %}
+{% endif %}
+
+{% set bodyClassnames = bodyClassnames ?? null %}
+{% set rootClassnames = rootClassnames ?? null %}
+{% set headerClassnames = headerClassnames ?? null %}
+{% set mainClassnames = mainClassnames ?? null %}
+{% set footerClassnames = footerClassnames ?? null %}
+
+<!doctype html>
+<html class="no-js" lang="{{ currentSite.language }}">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{ metaTitle }}</title>
+    {% if metaDescription is not empty -%}
+      <meta name="description" content="{{ metaDescription }}">
+    {%- endif %}
+    {% if canonicalUrl and canonicalUrl != craft.app.request.absoluteUrl %}
+      <link rel="canonical" href="{{ canonicalUrl }}" />
+    {% endif %}
+
+    {% block meta_theme %}
+      <link rel="manifest" href="site.webmanifest">
+      <link rel="apple-touch-icon" href="icon.png">
+      <!-- Place favicon.ico in the root directory -->
+      {% if themeColor %}
+        <meta name="theme-color" content="{{ themeColor }}">
+      {% endif %}
+    {% endblock %}
+
+    <!-- =FOUC -->
+    <style>html.is-loading{visibility: hidden;}</style>
+    <script type="text/javascript">(function(H){H.className=H.className.replace(/\bno-js\b/,'js is-loading')})(document.documentElement)</script>
+
+    {% block meta_social %}
+      {% include '_layouts/_partials/social-og' %}
+    {% endblock %}
+
+    {% block head_styles %}
+    {% endblock %}
+
+    {##
+     # @note Vitejs will inject all CSS imported in the scripts in the DOM:
+     # - dev-server: as inline <style> tag
+     # - production build: as an async <link> tag
+     #
+     # @note By pasing `false` as 2nd argument to `craft.vite.script`, stylesheets
+     #  will be injected as synchronous <link> tags above. Otherwise, they will be
+     #  loaded asynchronously: https://www.filamentgroup.com/lab/load-css-simpler/.
+     #
+     # @note the script itself will be injected as esm modules (i.e.
+     # `<script type="module" src="...">`) which are non-blocking, and will be
+     # executed in order after the browser is done parsing the whole HTML document.
+    ##}
+
+    {% block head_scripts %}
+      {{ craft.vite.script('scripts/main.js', false) }}
+    {% endblock %}
+  </head>
+
+  <body class="{{ bodyClassnames }}">
+
+    {% block body_start %}
+    {% endblock %}
+
+    <div class="l-root {{ rootClassnames }}" role="presentation">
+      {% if block('body_header') is defined %}
+        <header class="l-header {{ headerClassnames }}">
+          {{ block('body_header') | raw }}
+        </header>
+      {% endif %}
+
+      {% if block('body_main') is defined %}
+        <main class="l-main {{ mainClassnames }}">
+          {{ block('body_main') | raw }}
+        </main>
+      {% endif %}
+
+      {% if block('body_footer') is defined %}
+        <footer class="l-footer {{ footerClassnames }}">
+          {{ block('body_footer') | raw }}
+        </footer>
+      {% endif %}
+    </div>
+
+    {% block body_end %}
+    {% endblock %}
+
+    {% block body_scripts %}
+    {% endblock %}
+
+    <!-- =FOUC -->
+    <script type="text/javascript">(function(H){H.className=H.className.replace(/\bis-loading\b/,'is-loaded')})(document.documentElement)</script>
+
+  </body>
+
+</html>

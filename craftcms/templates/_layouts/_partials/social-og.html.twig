@@ -1,0 +1,15 @@
+{% set ogTitle = ogTitle ?? metaTitle %}
+{% set ogUrl = ogUrl ?? canonicalUrl %}
+{% set ogType = ogType ?? null %}
+{% set ogImage = ogImage ?? metaImage %}
+{% set ogImageUrl = (ogImage is instance of('craft\\elements\\Asset') ?
+  ogImage.getUrl({ width: 1200, height: 600 }) : (ogImage.url ?? ogImage)) %}
+
+<meta property="og:title" content="{{ ogTitle }}">
+<meta property="og:url" content="{{ ogUrl }}">
+{% if ogType is not empty %}
+  <meta property="og:type" content="{{ ogType }}">
+{% endif %}
+{% if ogImageUrl is not empty %}
+  <meta property="og:image" content="{{ ogImageUrl }}">
+{% endif %}
