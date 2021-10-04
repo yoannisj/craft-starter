@@ -127,6 +127,8 @@ services:
         - YARN_VERSION=${YARN_VERSION:-1.16.0}
         - LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE:-./services/ssl/localhost.selfsigned-private.key}
         - LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE:-./services/ssl/localhost.selfsigned-public.crt}
+    env_file:
+      - .env
     environment:
       WEB_ROOT: /home/node/app/web/
       NODE_ENV: ${ENVIRONMENT:-production}

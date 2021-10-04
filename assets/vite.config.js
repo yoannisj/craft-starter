@@ -64,7 +64,7 @@ export default defineConfig(function(ctx) {
       // host: process.env.ASSETS_DEVSERVER_HOSTNAME,
       host: '0.0.0.0',
       // Port the dev-server should listen to
-      port: 3000,
+      port: process.env.ASSETS_DEVSERVER_PORT,
       // Whether to stick to `server.port`, or try the next port if unavailable
       strictPort: true,
       // Enable https access using specific ssl certification keys

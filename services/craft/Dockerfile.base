@@ -91,7 +91,7 @@ RUN chmod a+x craft_queue.sh craft
 # Copy composer dependency files
 COPY --chown=www-data:www-data ./composer.json ./
 COPY --chown=www-data:www-data ./composer.lock ./
-COPY --chown=www-data:www-data ./vendor ./vendor
+# COPY --chown=www-data:www-data ./vendor ./vendor
 
 # Copy Craft-CMS project files
 COPY --chown=www-data:www-data ./craftcms/config ./craftcms/config

@@ -1,3 +1,0 @@
-# Include directory in git repository, but not its contents
-*
-!.gitignore

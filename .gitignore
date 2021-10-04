@@ -3,6 +3,7 @@
 
 # Project Dependencies
 vendor
+node_modules
 
 # Generated files and data
 craftcms/storage

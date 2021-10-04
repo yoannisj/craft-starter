@@ -49,6 +49,7 @@ COPY --chown=node:node ./package.json ./
 COPY --chown=node:node ./yarn.lock ./
 COPY --chown=node:node ./assets ./assets
 COPY --chown=node:node ./craftcms/templates ./craftcms/templates
+# COPY --chown=node:node ./node_modules ./node_modules
 # COPY --chown=node:node ./web/dist ./web/dist
 
 # Prepare node_modules directory and make sure its writable
@@ -63,9 +64,12 @@ USER node
 # Expose ports on which the node-based assets server is listening
 EXPOSE $ASSETS_DEVSERVER_PORT
 
+# Install node dependencies with yarn
+RUN yarn upgrade && yarn install --production=false
+
 # When starting the image, install node modules with yarn and
 # run vite dev server.
 # @note running `yarn` first will install what's in yarn.lock or,
 #   if the yarn.lock file is missing, update the dependencies and create it
 # @todo Run 'yarn build' in production
-CMD yarn install && yarn dev
+CMD yarn install --production=false && yarn dev
