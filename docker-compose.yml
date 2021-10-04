@@ -12,8 +12,8 @@ services:
         - NGINX_VERSION=${NGINX_VERSION:-1.19}
         - NGINX_ENVSUBST_TEMPLATE_SUFFIX=${NGINX_ENVSUBST_TEMPLATE_SUFFIX:-.template}
         - NGINX_ENVSUBST_TEMPLATE_DIR=${NGINX_ENVSUBST_TEMPLATE_DIR:-/etc/nginx/templates}
-        - LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE:-./services/httpd/ssl/localhost.selfsigned-private.key}
-        - LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE:-./services/httpd/ssl/localhost.selfsigned-public.crt}
+        - LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE:-./services/httpd/ssl/localhost.selfsigned-private.pem}
+        - LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE:-./services/httpd/ssl/localhost.selfsigned-public.pem}
     env_file:
       # load environment variables from files listed below into Dockerfile and containers
       # @note environment variables in files lower down the list override values from previous files
@@ -24,8 +24,8 @@ services:
       CORS_ALLOW_HOSTNAMES_PATTERN: ${CORS_ALLOW_HOSTNAMES_PATTERN:-'(localhost|\S*\.ngrok\.io)'}
     volumes:
       - ./web:/var/www/html/web # serve public static files via nginx directly
-      # - ${LOCAL_SSL_KEY_FILE:-./services/ssl/localhost.selfsigned-private.key}:/etc/nginx/ssl/private.key
-      # - ${LOCAL_SSL_CERT_FILE:-./services/ssl/localhost.selfsigned-public.crt}:/etc/nginx/ssl/public.crt
+      # - ${LOCAL_SSL_KEY_FILE:-./services/ssl/localhost.selfsigned-private.pem}:/etc/nginx/ssl/private.pem
+      # - ${LOCAL_SSL_CERT_FILE:-./services/ssl/localhost.selfsigned-public.pem}:/etc/nginx/ssl/public.pem
     init: true # enables improved process management
     networks:
       - craftnet # add service to the internal 'craftnet' network (see 'networks' key below)
@@ -125,8 +125,8 @@ services:
         - NODE_VERSION=${NODE_VERSION:-16}
         - NODE_ENV=${ENVIRONMENT:-production}
         - YARN_VERSION=${YARN_VERSION:-1.16.0}
-        - LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE:-./services/ssl/localhost.selfsigned-private.key}
-        - LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE:-./services/ssl/localhost.selfsigned-public.crt}
+        - LOCAL_SSL_KEY_FILE=${LOCAL_SSL_KEY_FILE:-./services/ssl/localhost.selfsigned-private.pem}
+        - LOCAL_SSL_CERT_FILE=${LOCAL_SSL_CERT_FILE:-./services/ssl/localhost.selfsigned-public.pem}
     env_file:
       - .env
     environment:
@@ -140,8 +140,8 @@ services:
       - ./assets:/home/node/app/assets # source assets (served by dev-server)
       - ./craftcms/templates:/home/node/app/craftcms/templates
       - ./web/dist:/home/node/app/web/dist # production built assets
-      - ${LOCAL_SSL_KEY_FILE:-./services/ssl/localhost.selfsigned-private.key}:/home/node/ssl/private.key
-      - ${LOCAL_SSL_CERT_FILE:-./services/ssl/localhost.selfsigned-public.crt}:/home/node/ssl/public.crt
+      - ${LOCAL_SSL_KEY_FILE:-./services/ssl/localhost.selfsigned-private.pem}:/home/node/ssl/private.pem
+      - ${LOCAL_SSL_CERT_FILE:-./services/ssl/localhost.selfsigned-public.pem}:/home/node/ssl/public.pem
     init: true
     networks:
       - craftnet

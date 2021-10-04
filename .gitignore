@@ -12,8 +12,8 @@ web/dist
 
 # SSL Certificates
 services/ssl/**/*
-!services/ssl/localhost.selfsigned-private.key
-!services/ssl/localhost.selfsigned-public.crt
+!services/ssl/localhost.selfsigned-private.pem
+!services/ssl/localhost.selfsigned-public.pem
 
 # Miscelaneous (OS files, Editor preferences, ...)
 .DS_Store

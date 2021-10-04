@@ -69,8 +69,8 @@ export default defineConfig(function(ctx) {
       strictPort: true,
       // Enable https access using specific ssl certification keys
       https: {
-        key: fs.readFileSync('/home/node/ssl/private.key'),
-        cert: fs.readFileSync('/home/node/ssl/public.crt'),
+        key: fs.readFileSync('/home/node/ssl/private.pem'),
+        cert: fs.readFileSync('/home/node/ssl/public.pem'),
       },
       fs: {
         strict: true,

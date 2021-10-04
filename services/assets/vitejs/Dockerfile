@@ -13,8 +13,8 @@ FROM node:$NODE_VERSION
 ARG NODE_VERSION=$NODE_VERSION
 ARG NODE_ENV=$NODE_ENV
 ARG YARN_VERSION=1.16.0
-ARG LOCAL_SSL_KEY_FILE=./services/httpd/ssl/localhost.selfsigned-private.key
-ARG LOCAL_SSL_CERT_FILE=./services/httpd/ssl/localhost.selfsigned-public.cert
+ARG LOCAL_SSL_KEY_FILE=./services/httpd/ssl/localhost.selfsigned-private.pem
+ARG LOCAL_SSL_CERT_FILE=./services/httpd/ssl/localhost.selfsigned-public.pem
 ARG ASSETS_DEVSERVER_PORT=3000
 
 # Expose environment variables and set default value
@@ -38,8 +38,8 @@ ENV ASSETS_DEVSERVER_HOSTNAME_INTERNAL=$ASSETS_DEVSERVER_HOSTNAME
 RUN yarn policies set-version $YARN_VERSION
 
 # Copy localhost SSL certificate
-COPY --chown=node:node ${LOCAL_SSL_KEY_FILE} /home/node/ssl/private.key
-COPY --chown=node:node ${LOCAL_SSL_CERT_FILE} /home/node/ssl/public.crt
+COPY --chown=node:node ${LOCAL_SSL_KEY_FILE} /home/node/ssl/private.pem
+COPY --chown=node:node ${LOCAL_SSL_CERT_FILE} /home/node/ssl/public.pem
 
 # Set workdir to project root
 WORKDIR /home/node/app

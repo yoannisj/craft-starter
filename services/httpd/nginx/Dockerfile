@@ -16,8 +16,8 @@ ARG ENVIRONMENT
 ARG NGINX_VERSION
 ARG NGINX_ENVSUBST_TEMPLATE_SUFFIX=.template
 ARG NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
-ARG LOCAL_SSL_KEY_FILE=./services/httpd/ssl/localhost.selfsigned-private.key
-ARG LOCAL_SSL_CERT_FILE=./services/httpd/ssl/localhost.selfsigned-public.crt
+ARG LOCAL_SSL_KEY_FILE=./services/httpd/ssl/localhost.selfsigned-private.pem
+ARG LOCAL_SSL_CERT_FILE=./services/httpd/ssl/localhost.selfsigned-public.pem
 
 # Expose environment variables and set default value
 # (these are available in containers created with this image)
@@ -34,8 +34,8 @@ ENV WEB_PORT=443
 ENV WEB_PORT_UNSECURE=80
 
 # Copy localhost SSL certificate
-COPY ${LOCAL_SSL_KEY_FILE} /etc/nginx/ssl/private.key
-COPY ${LOCAL_SSL_CERT_FILE} /etc/nginx/ssl/public.crt
+COPY ${LOCAL_SSL_KEY_FILE} /etc/nginx/ssl/private.pem
+COPY ${LOCAL_SSL_CERT_FILE} /etc/nginx/ssl/public.pem
 
 # Copy custom config template files into the container's `/etc/nginx/templates`
 # directory, where they will be picked up by docker which will:

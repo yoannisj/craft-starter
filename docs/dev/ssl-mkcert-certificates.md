@@ -6,5 +6,5 @@ If you have [mkcert](https://mkcert.dev) installed on your host machine, you can
 **Note**: Replace `myproject.test` in the following command with your local virtual hostname
 
 ```
-mkcert -key-file services/ssl/myproject.test.mkcert-public.crt -cert-file services/ssl/myproject.test.mkcert-private.key "*.myproject.test" myproject.test localhost 127.0.0.1 ::1
+mkcert -key-file services/ssl/myproject.test.mkcert-public.pem -cert-file services/ssl/myproject.test.mkcert-private.pem "*.myproject.test" myproject.test localhost 127.0.0.1 ::1
 ```
