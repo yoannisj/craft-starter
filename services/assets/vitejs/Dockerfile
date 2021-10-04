@@ -64,9 +64,6 @@ USER node
 # Expose ports on which the node-based assets server is listening
 EXPOSE $ASSETS_DEVSERVER_PORT
 
-# Install node dependencies with yarn
-RUN yarn upgrade && yarn install --production=false
-
 # When starting the image, install node modules with yarn and
 # run vite dev server.
 # @note running `yarn` first will install what's in yarn.lock or,
