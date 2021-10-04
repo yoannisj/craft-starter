@@ -11,7 +11,7 @@ web/uploads
 web/dist
 
 # SSL Certificates
-services/ssl
+services/ssl/**/*
 !services/ssl/localhost.selfsigned-private.key
 !services/ssl/localhost.selfsigned-public.crt
 
