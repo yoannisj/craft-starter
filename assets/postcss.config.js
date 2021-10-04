@@ -5,8 +5,8 @@
 
  module.exports = {
   plugins: [
-    require('autoprefixer')(),
     require('postcss-normalize')(),
+    require('autoprefixer')(),
     require('postcss-flexbugs-fixes')(),
   ],
 };
